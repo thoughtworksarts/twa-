@@ -34,6 +34,7 @@ function buildTodoAndySubsheet() {
         label: 2,
         noun: 2,
         verb: 3,
+        timing: 4,
         workDate: 7,
         startTime: 8,
         durationHours: 9
@@ -48,6 +49,7 @@ function buildTodoAndySubsheet() {
   const triggerCols = [
     sections.todo.columns.noun,
     sections.todo.columns.verb,
+    sections.todo.columns.timing,
     sections.todo.columns.workDate,
     sections.todo.columns.startTime,
     sections.todo.columns.durationHours
@@ -58,4 +60,9 @@ function buildTodoAndySubsheet() {
 
 function postProcessSubsheets() {
   state.validEventCategories = ['Todo'];
+}
+
+function isSpecificValidEventData(row, section) {
+  var timing = row[section.rangeColumns.timing];
+  return timing == '(1) Now' || timing == '(2) Next';
 }
