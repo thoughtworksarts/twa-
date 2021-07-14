@@ -4,7 +4,7 @@ var config = {
     id: '1jvrit8ybRObHLCh3hNBdQnANssKyLy6UR0SFTTCIusY'
   },
   toggles: {
-    performDataUpdates: false,
+    performDataUpdates: true,
     showLogAlert: false
   }
 }
