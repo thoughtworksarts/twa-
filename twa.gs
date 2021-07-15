@@ -35,9 +35,9 @@ function buildTodoAndySubsheet() {
         noun: 2,
         verb: 3,
         timing: 4,
-        workDate: 7,
-        startTime: 8,
-        durationHours: 9
+        workDate: 5,
+        startTime: 6,
+        durationHours: 7
       },
       rangeColumns: {},
       hasDoneCol: false,
