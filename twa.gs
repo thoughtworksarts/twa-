@@ -14,6 +14,12 @@ var config = {
   }
 }
 
+function customOnEdit() {
+  if(state.spreadsheet.getActiveSheet().getName() === config.projectSync.sourceTab) {
+    syncProjects();
+  }
+}
+
 function getNameSubstitution(name) {
   return name;
 }
