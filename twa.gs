@@ -3,6 +3,11 @@ var config = {
     name: 'twa—',
     id: '1jvrit8ybRObHLCh3hNBdQnANssKyLy6UR0SFTTCIusY'
   },
+  projectSync: {
+    sourceTab: 'Projects',
+    destinationSheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
+    destinationTab: 'Current Projects'
+  },
   toggles: {
     performDataUpdates: true,
     showLogAlert: false
@@ -65,4 +70,14 @@ function postProcessSubsheets() {
 function isSpecificValidEventData(row, section) {
   var timing = row[section.rangeColumns.timing];
   return timing == '(1) Now' || timing == '(2) Next';
+}
+
+function syncProjects() {
+  var sourceSheet = SpreadsheetApp.openById(config.gsheet.id);
+  var sourceTab = sourceSheet.getSheetByName(config.projectSync.sourceTab);
+  var sourceData = sourceTab.getDataRange();
+  var destinationSheet = SpreadsheetApp.openById(config.projectSync.destinationSheetID);
+  var destinationTab = destinationSheet.getSheetByName(config.projectSync.destinationTab);
+  var destinationRange = destinationTab.getRange(1, 1, sourceData.getNumRows(), sourceData.getNumColumns())
+  destinationRange.setValues(sourceData.getValues());
 }
