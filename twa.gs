@@ -6,7 +6,9 @@ var config = {
   projectSync: {
     sourceTab: 'Projects',
     destinationSheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
-    destinationTab: 'Current Projects'
+    destinationTab: 'Current Projects',
+    assignmentRow: 5,
+    assignmentCol: 8
   },
   toggles: {
     performDataUpdates: true,
@@ -81,9 +83,23 @@ function isSpecificValidEventData(row, section) {
 function syncProjects() {
   var sourceSheet = SpreadsheetApp.openById(config.gsheet.id);
   var sourceTab = sourceSheet.getSheetByName(config.projectSync.sourceTab);
-  var sourceData = sourceTab.getDataRange();
   var destinationSheet = SpreadsheetApp.openById(config.projectSync.destinationSheetID);
   var destinationTab = destinationSheet.getSheetByName(config.projectSync.destinationTab);
-  var destinationRange = destinationTab.getRange(1, 1, sourceData.getNumRows(), sourceData.getNumColumns())
-  destinationRange.setValues(sourceData.getValues());
+
+  overwriteProjectsWithRichTextValues(sourceTab, destinationTab);
+  copyProjectsAssignmentValues(sourceTab, destinationTab);
+}
+
+function overwriteProjectsWithRichTextValues(sourceTab, destinationTab) {
+  var sourceRange = sourceTab.getRange(1, 1, sourceTab.getMaxRows(), sourceTab.getMaxColumns());
+  var destinationRange = destinationTab.getRange(1, 1, sourceRange.getNumRows(), sourceRange.getNumColumns());
+  destinationRange.clearContent();
+  destinationRange.setRichTextValues(sourceRange.getRichTextValues());
+}
+
+function copyProjectsAssignmentValues(sourceTab, destinationTab) {
+  var numRows = sourceTab.getMaxRows() - config.projectSync.assignmentRow;
+  var sourceRange = sourceTab.getRange(config.projectSync.assignmentRow, config.projectSync.assignmentCol, numRows, 1);
+  var destinationRange = destinationTab.getRange(5, 8, numRows, 1);
+  destinationRange.setValues(sourceRange.getValues());
 }
