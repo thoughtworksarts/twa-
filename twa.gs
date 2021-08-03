@@ -4,6 +4,7 @@ var config = {
     id: '1jvrit8ybRObHLCh3hNBdQnANssKyLy6UR0SFTTCIusY'
   },
   projectSync: {
+    handsTab: 'Hands',
     sourceTab: 'Projects',
     destinationSheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
     destinationTab: 'Current Projects',
@@ -17,7 +18,7 @@ var config = {
 }
 
 function customOnEdit() {
-  if(state.spreadsheet.getActiveSheet().getName() === config.projectSync.sourceTab) {
+  if(state.spreadsheet.getActiveSheet().getName() === config.projectSync.sourceTab || state.spreadsheet.getActiveSheet().getName() === config.projectSync.handsTab) {
     syncProjects();
   }
 }
