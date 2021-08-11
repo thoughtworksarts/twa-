@@ -69,7 +69,7 @@ function buildTodoAndySubsheet() {
     sections.todo.columns.durationHours
   ];
 
-  state.eventSubsheets.push(new EventSubsheet(state.spreadsheet, 'Todo:Andy', '630855359', range, sections, triggerCols));
+  state.eventSubsheets.push(new EventSubsheet(state.spreadsheet, 'Director:Todo', '630855359', range, sections, triggerCols));
 }
 
 function postProcessSubsheets() {
