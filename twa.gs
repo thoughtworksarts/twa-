@@ -29,6 +29,8 @@ function getNameSubstitution(name) {
 
 function preProcessSubsheets() {
   state.personValuesSubsheet = new PersonValuesSubsheet(state.spreadsheet, '(workings)', { start:'G3', end:'G5' });
+  const calendarId = state.spreadsheet.getSheetByName('(workings)').getRange('H3').getValue();
+  state.twaCalendar = CalendarApp.getCalendarById(calendarId);
   buildTodoAndySubsheet();
 }
 
@@ -103,4 +105,19 @@ function copyProjectsAssignmentValues(sourceTab, destinationTab) {
   var sourceRange = sourceTab.getRange(config.projectSync.assignmentRow, config.projectSync.assignmentCol, numRows, 1);
   var destinationRange = destinationTab.getRange(5, 8, numRows, 1);
   destinationRange.setValues(sourceRange.getValues());
+}
+
+function updateSubsheets() {
+  const today = new Date();
+  const threeYears = new Date();
+  threeYears.setFullYear(threeYears.getFullYear() + 3);
+
+  var calendarEventStr = '';
+  const calendarEvents = getCalendarEvents(state.twaCalendar, today, threeYears);
+
+  calendarEvents.forEach(function(calendarEvent) {
+    calendarEventStr += calendarEvent.startDateTime + ' ' + calendarEvent.title + '\n';
+  });
+
+  state.spreadsheet.getSheetByName('Timeline').getRange('M2').setValue(calendarEventStr);
 }
