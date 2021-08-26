@@ -35,6 +35,13 @@ function customOnEdit() {
   }
 }
 
+function customOnOpen() {
+  var ui = SpreadsheetApp.getUi();
+  ui.createMenu('Generate')
+      .addItem('List of Upcoming Events', 'alertListOfUpcomingEvents')
+      .addToUi();
+}
+
 function customUpdates() {
   syncTimelineEvents();
 }
@@ -195,4 +202,9 @@ function buildCalendarEventCellLine(calendarEvent) {
          dayNumber + ': ' +
          (dayNumber <= 9 && !unsureDate ? ' ' : '') +
          calendarEvent.title + '\n';
+}
+
+var listOfUpcomingEvents = "TEST";
+function alertListOfUpcomingEvents() {
+  alert(listOfUpcomingEvents);
 }
