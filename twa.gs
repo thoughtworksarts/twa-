@@ -13,6 +13,7 @@ var config = {
   },
   timelineSync: {
     timelineTab: 'Timeline',
+    listOfUpcomingEventsPropertyKey: 'listOfUpcomingEvents',
     dateCol: 3,
     eventCol: 4,
     filterRow: 2,
@@ -21,7 +22,8 @@ var config = {
   toggles: {
     performDataUpdates: true,
     showLogAlert: false
-  }
+  },
+  userProperties: PropertiesService.getUserProperties()
 }
 
 function customOnEdit() {
@@ -32,6 +34,7 @@ function customOnEdit() {
     syncProjects();
   } else if(activeSubsheetName === config.timelineSync.timelineTab && activeColumn === config.timelineSync.eventCol) {
     syncTimelineEvents();
+    config.userProperties.setProperty(config.timelineSync.listOfUpcomingEventsPropertyKey, listOfUpcomingEvents);
   }
 }
 
@@ -143,6 +146,7 @@ function syncTimelineEvents() {
   }
 
   timelineRanges.eventRange.setValues(timelineRanges.eventValues);
+  listOfUpcomingEvents += timelineRanges.eventValues + '\n';
 }
 
 function getTimelineRanges(timelineSheet) {
@@ -204,7 +208,8 @@ function buildCalendarEventCellLine(calendarEvent) {
          calendarEvent.title + '\n';
 }
 
-var listOfUpcomingEvents = "TEST";
+var listOfUpcomingEvents = '';
 function alertListOfUpcomingEvents() {
-  alert(listOfUpcomingEvents);
+  listOfUpcomingEvents = config.userProperties.getProperty(config.timelineSync.listOfUpcomingEventsPropertyKey) || '';
+  alert(listOfUpcomingEvents.length == 0 ? 'Unable to show event list.' : listOfUpcomingEvents);
 }
