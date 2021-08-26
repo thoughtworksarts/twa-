@@ -232,5 +232,5 @@ function buildCalendarEventAlertLine(calendarEvent) {
 
 function alertListOfUpcomingEvents() {
   var listOfUpcomingEvents = config.userProperties.getProperty(config.timelineSync.listOfUpcomingEventsPropertyKey) || '';
-  alert(listOfUpcomingEvents.length == 0 ? 'Generating event list... try again in a few moments.' : listOfUpcomingEvents);
+  alert(listOfUpcomingEvents.length == 0 ? 'Processing updates... try again in a minute.' : listOfUpcomingEvents);
 }
