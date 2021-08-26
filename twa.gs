@@ -180,10 +180,19 @@ function isValidCalendarEventForWeek(calendarEvent, weekCommenceDate, eventFilte
 function formatCalendarEventsForCell(calendarEventsForCell) {
   var resultStr = '';
   calendarEventsForCell.forEach(function(calendarEvent) {
-    const dayNumber = calendarEvent.startDateTime.getDate();
-    var unsureDate = calendarEvent.title.endsWith('?');
-    var prefix = unsureDate ? '[?] ' : '';
-    resultStr += prefix + calendarEvent.startDateTime.getDayStr() + ' ' + dayNumber + ': ' + (dayNumber <= 9 && !unsureDate ? ' ' : '') + calendarEvent.title + '\n';
+    resultStr += buildCalendarEventCellLine(calendarEvent)
   });
   return resultStr.trim('\n');
+}
+
+function buildCalendarEventCellLine(calendarEvent) {
+  const dayNumber = calendarEvent.startDateTime.getDate();
+  const unsureDate = calendarEvent.title.endsWith('?');
+  const prefix = unsureDate ? '[?] ' : '';
+
+  return prefix +
+         calendarEvent.startDateTime.getDayStr() + ' ' +
+         dayNumber + ': ' +
+         (dayNumber <= 9 && !unsureDate ? ' ' : '') +
+         calendarEvent.title + '\n';
 }
