@@ -34,7 +34,6 @@ function customOnEdit() {
     syncProjects();
   } else if(activeSubsheetName === config.timelineSync.timelineTab && activeColumn === config.timelineSync.eventCol) {
     syncTimelineEvents();
-    config.userProperties.setProperty(config.timelineSync.listOfUpcomingEventsPropertyKey, listOfUpcomingEvents);
   }
 }
 
@@ -43,6 +42,7 @@ function customOnOpen() {
   ui.createMenu('Generate')
       .addItem('List of Upcoming Events', 'alertListOfUpcomingEvents')
       .addToUi();
+  syncTimelineEvents();
 }
 
 function customUpdates() {
@@ -134,6 +134,7 @@ function copyProjectsAssignmentValues(sourceTab, destinationTab) {
 }
 
 function syncTimelineEvents() {
+  config.userProperties.setProperty(config.timelineSync.listOfUpcomingEventsPropertyKey, '');
   var timelineRanges = getTimelineRanges(state.spreadsheet.getSheetByName('Timeline'));
   const calendarEvents = getTWACalendarEvents();
 
@@ -146,7 +147,7 @@ function syncTimelineEvents() {
   }
 
   timelineRanges.eventRange.setValues(timelineRanges.eventValues);
-  listOfUpcomingEvents += timelineRanges.eventValues + '\n';
+  config.userProperties.setProperty(config.timelineSync.listOfUpcomingEventsPropertyKey, '' + timelineRanges.eventValues);
 }
 
 function getTimelineRanges(timelineSheet) {
@@ -208,8 +209,7 @@ function buildCalendarEventCellLine(calendarEvent) {
          calendarEvent.title + '\n';
 }
 
-var listOfUpcomingEvents = '';
 function alertListOfUpcomingEvents() {
-  listOfUpcomingEvents = config.userProperties.getProperty(config.timelineSync.listOfUpcomingEventsPropertyKey) || '';
-  alert(listOfUpcomingEvents.length == 0 ? 'Unable to show event list.' : listOfUpcomingEvents);
+  var listOfUpcomingEvents = config.userProperties.getProperty(config.timelineSync.listOfUpcomingEventsPropertyKey) || '';
+  alert(listOfUpcomingEvents.length == 0 ? 'Event list not ready, please try again in a few moments.' : listOfUpcomingEvents);
 }
