@@ -38,11 +38,9 @@ function customOnEdit() {
 }
 
 function customOnOpen() {
-  var ui = SpreadsheetApp.getUi();
-  ui.createMenu('Generate')
+  SpreadsheetApp.getUi().createMenu('Generate')
       .addItem('List of Upcoming Events', 'alertListOfUpcomingEvents')
       .addToUi();
-  syncTimelineEvents();
 }
 
 function customUpdates() {
@@ -137,17 +135,19 @@ function syncTimelineEvents() {
   config.userProperties.setProperty(config.timelineSync.listOfUpcomingEventsPropertyKey, '');
   var timelineRanges = getTimelineRanges(state.spreadsheet.getSheetByName('Timeline'));
   const calendarEvents = getTWACalendarEvents();
+  var listOfUpcomingEventsForAlert = '';
 
   for(var i = 0; i < timelineRanges.dateValues.length; i++) {
     var weekCommenceDate = timelineRanges.dateValues[i][0];
     if(weekCommenceDate instanceof Date) {
       var calendarEventsThisWeek = findCalendarEventsThisWeek(weekCommenceDate, calendarEvents, timelineRanges.eventFilters);
       timelineRanges.eventValues[i][0] = calendarEventsThisWeek.length > 0 ? formatCalendarEventsForCell(calendarEventsThisWeek) : '';
+      listOfUpcomingEventsForAlert += calendarEventsThisWeek.length > 0 ? formatCalendarEventsForAlert(calendarEventsThisWeek) : '';
     }
   }
 
   timelineRanges.eventRange.setValues(timelineRanges.eventValues);
-  config.userProperties.setProperty(config.timelineSync.listOfUpcomingEventsPropertyKey, '' + timelineRanges.eventValues);
+  config.userProperties.setProperty(config.timelineSync.listOfUpcomingEventsPropertyKey, listOfUpcomingEventsForAlert);
 }
 
 function getTimelineRanges(timelineSheet) {
@@ -197,13 +197,34 @@ function formatCalendarEventsForCell(calendarEventsForCell) {
   return resultStr.trim('\n');
 }
 
+function formatCalendarEventsForAlert(calendarEventsForAlert) {
+  var resultStr = '';
+  calendarEventsForAlert.forEach(function(calendarEvent) {
+    resultStr += buildCalendarEventAlertLine(calendarEvent)
+  });
+  return resultStr;
+}
+
 function buildCalendarEventCellLine(calendarEvent) {
   const dayNumber = calendarEvent.startDateTime.getDate();
   const unsureDate = calendarEvent.title.endsWith('?');
   const prefix = unsureDate ? '[?] ' : '';
 
   return prefix +
-         calendarEvent.startDateTime.getDayStr() + ' ' +
+         calendarEvent.startDateTime.getDayShortStr() + ' ' +
+         dayNumber + ': ' +
+         (dayNumber <= 9 && !unsureDate ? ' ' : '') +
+         calendarEvent.title + '\n';
+}
+
+function buildCalendarEventAlertLine(calendarEvent) {
+  const dayNumber = calendarEvent.startDateTime.getDate();
+  const unsureDate = calendarEvent.title.endsWith('?');
+  const prefix = unsureDate ? '[?] ' : '';
+
+  return prefix +
+         calendarEvent.startDateTime.getDayLongStr() + ', ' +
+         calendarEvent.startDateTime.getMonthLongStr() + ' ' +
          dayNumber + ': ' +
          (dayNumber <= 9 && !unsureDate ? ' ' : '') +
          calendarEvent.title + '\n';
@@ -211,5 +232,5 @@ function buildCalendarEventCellLine(calendarEvent) {
 
 function alertListOfUpcomingEvents() {
   var listOfUpcomingEvents = config.userProperties.getProperty(config.timelineSync.listOfUpcomingEventsPropertyKey) || '';
-  alert(listOfUpcomingEvents.length == 0 ? 'Event list not ready, please try again in a few moments.' : listOfUpcomingEvents);
+  alert(listOfUpcomingEvents.length == 0 ? 'Generating event list... try again in a few moments.' : listOfUpcomingEvents);
 }
