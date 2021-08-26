@@ -11,6 +11,11 @@ var config = {
     assignmentRow: 5,
     assignmentCol: 8
   },
+  timelineSync: {
+    dateCol: 3,
+    eventCol: 4,
+    beginRow: 3
+  },
   toggles: {
     performDataUpdates: true,
     showLogAlert: false
@@ -108,16 +113,51 @@ function copyProjectsAssignmentValues(sourceTab, destinationTab) {
 }
 
 function updateSubsheets() {
+  updateTimelineSubsheet();
+}
+
+function updateTimelineSubsheet() {
+  var timelineSubsheetRanges = getTimelineSubsheetRanges(state.spreadsheet.getSheetByName('Timeline'));
+  const calendarEvents = getTWACalendarEvents();
+
+  for(var i = 0; i < timelineSubsheetRanges.dateValues.length; i++) {
+    var weekCommenceDate = timelineSubsheetRanges.dateValues[i][0];
+    if(weekCommenceDate instanceof Date) {
+      var calendarEventsThisWeek = findCalendarEventsThisWeek(weekCommenceDate, calendarEvents);
+      timelineSubsheetRanges.eventValues[i][0] = calendarEventsThisWeek.length > 0 ? calendarEventsThisWeek[0].title : '';
+    }
+  }
+
+  timelineSubsheetRanges.eventRange.setValues(timelineSubsheetRanges.eventValues);
+}
+
+function getTimelineSubsheetRanges(timelineSheet) {
+  const numRows = timelineSheet.getMaxRows() - config.timelineSync.beginRow + 1;
+  var dateRange = timelineSheet.getRange(config.timelineSync.beginRow, config.timelineSync.dateCol, numRows, 1);
+  var eventRange = timelineSheet.getRange(config.timelineSync.beginRow, config.timelineSync.eventCol, numRows, 1);
+
+  return {
+    dateRange: dateRange,
+    eventRange: eventRange,
+    dateValues: dateRange.getValues(),
+    eventValues: eventRange.getValues()
+  };
+}
+
+function getTWACalendarEvents() {
   const today = new Date();
   const threeYears = new Date();
   threeYears.setFullYear(threeYears.getFullYear() + 3);
+  return getCalendarEvents(state.twaCalendar, today, threeYears);
+}
 
-  var calendarEventStr = '';
-  const calendarEvents = getCalendarEvents(state.twaCalendar, today, threeYears);
-
+function findCalendarEventsThisWeek(weekCommenceDate, calendarEvents) {
+  var result = [];
+  const weekConcludeDate = weekCommenceDate.addDays(7);
   calendarEvents.forEach(function(calendarEvent) {
-    calendarEventStr += calendarEvent.startDateTime + ' ' + calendarEvent.title + '\n';
+    if(calendarEvent.startDateTime >= weekCommenceDate && calendarEvent.startDateTime < weekConcludeDate) {
+      result.push(calendarEvent);
+    }
   });
-
-  state.spreadsheet.getSheetByName('Timeline').getRange('M2').setValue(calendarEventStr);
+  return result;
 }
