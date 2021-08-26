@@ -14,7 +14,8 @@ var config = {
   timelineSync: {
     dateCol: 3,
     eventCol: 4,
-    beginRow: 3
+    filterRow: 2,
+    beginRow: 4
   },
   toggles: {
     performDataUpdates: true,
@@ -117,30 +118,32 @@ function updateSubsheets() {
 }
 
 function updateTimelineSubsheet() {
-  var timelineSubsheetRanges = getTimelineSubsheetRanges(state.spreadsheet.getSheetByName('Timeline'));
+  var timelineRanges = getTimelineRanges(state.spreadsheet.getSheetByName('Timeline'));
   const calendarEvents = getTWACalendarEvents();
 
-  for(var i = 0; i < timelineSubsheetRanges.dateValues.length; i++) {
-    var weekCommenceDate = timelineSubsheetRanges.dateValues[i][0];
+  for(var i = 0; i < timelineRanges.dateValues.length; i++) {
+    var weekCommenceDate = timelineRanges.dateValues[i][0];
     if(weekCommenceDate instanceof Date) {
-      var calendarEventsThisWeek = findCalendarEventsThisWeek(weekCommenceDate, calendarEvents);
-      timelineSubsheetRanges.eventValues[i][0] = calendarEventsThisWeek.length > 0 ? calendarEventsThisWeek[0].title : '';
+      var calendarEventsThisWeek = findCalendarEventsThisWeek(weekCommenceDate, calendarEvents, timelineRanges.eventFilters);
+      timelineRanges.eventValues[i][0] = calendarEventsThisWeek.length > 0 ? calendarEventsThisWeek[0].title : '';
     }
   }
 
-  timelineSubsheetRanges.eventRange.setValues(timelineSubsheetRanges.eventValues);
+  timelineRanges.eventRange.setValues(timelineRanges.eventValues);
 }
 
-function getTimelineSubsheetRanges(timelineSheet) {
+function getTimelineRanges(timelineSheet) {
   const numRows = timelineSheet.getMaxRows() - config.timelineSync.beginRow + 1;
   var dateRange = timelineSheet.getRange(config.timelineSync.beginRow, config.timelineSync.dateCol, numRows, 1);
   var eventRange = timelineSheet.getRange(config.timelineSync.beginRow, config.timelineSync.eventCol, numRows, 1);
+  var eventFilterRange = timelineSheet.getRange(config.timelineSync.filterRow, config.timelineSync.eventCol, 1, 1);
 
   return {
     dateRange: dateRange,
     eventRange: eventRange,
     dateValues: dateRange.getValues(),
-    eventValues: eventRange.getValues()
+    eventValues: eventRange.getValues(),
+    eventFilters: eventFilterRange.getValue().split('\n')
   };
 }
 
@@ -151,13 +154,19 @@ function getTWACalendarEvents() {
   return getCalendarEvents(state.twaCalendar, today, threeYears);
 }
 
-function findCalendarEventsThisWeek(weekCommenceDate, calendarEvents) {
+function findCalendarEventsThisWeek(weekCommenceDate, calendarEvents, eventFilters) {
   var result = [];
-  const weekConcludeDate = weekCommenceDate.addDays(7);
   calendarEvents.forEach(function(calendarEvent) {
-    if(calendarEvent.startDateTime >= weekCommenceDate && calendarEvent.startDateTime < weekConcludeDate) {
+    if(isValidCalendarEventForWeek(calendarEvent, weekCommenceDate, eventFilters)) {
       result.push(calendarEvent);
     }
   });
   return result;
+}
+
+function isValidCalendarEventForWeek(calendarEvent, weekCommenceDate, eventFilters) {
+  const weekConcludeDate = weekCommenceDate.addDays(7);
+  return calendarEvent.startDateTime >= weekCommenceDate &&
+         calendarEvent.startDateTime < weekConcludeDate &&
+         !eventFilters.includes(calendarEvent.title);
 }
