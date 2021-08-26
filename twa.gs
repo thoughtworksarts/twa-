@@ -181,8 +181,9 @@ function formatCalendarEventsForCell(calendarEventsForCell) {
   var resultStr = '';
   calendarEventsForCell.forEach(function(calendarEvent) {
     const dayNumber = calendarEvent.startDateTime.getDate();
-    var prefix = calendarEvent.title.endsWith('?') ? '[?] ' : '';
-    resultStr += prefix + calendarEvent.startDateTime.getDayStr() + ' ' + dayNumber + ': ' + (dayNumber <= 9 ? ' ' : '') + calendarEvent.title + '\n';
+    var unsureDate = calendarEvent.title.endsWith('?');
+    var prefix = unsureDate ? '[?] ' : '';
+    resultStr += prefix + calendarEvent.startDateTime.getDayStr() + ' ' + dayNumber + ': ' + (dayNumber <= 9 && !unsureDate ? ' ' : '') + calendarEvent.title + '\n';
   });
   return resultStr.trim('\n');
 }
