@@ -131,7 +131,7 @@ function syncTimelineEvents() {
     var weekCommenceDate = timelineRanges.dateValues[i][0];
     if(weekCommenceDate instanceof Date) {
       var calendarEventsThisWeek = findCalendarEventsThisWeek(weekCommenceDate, calendarEvents, timelineRanges.eventFilters);
-      timelineRanges.eventValues[i][0] = calendarEventsThisWeek.length > 0 ? calendarEventsThisWeek[0].title : '';
+      timelineRanges.eventValues[i][0] = calendarEventsThisWeek.length > 0 ? formatCalendarEventsForCell(calendarEventsThisWeek) : '';
     }
   }
 
@@ -175,4 +175,14 @@ function isValidCalendarEventForWeek(calendarEvent, weekCommenceDate, eventFilte
   return calendarEvent.startDateTime >= weekCommenceDate &&
          calendarEvent.startDateTime < weekConcludeDate &&
          !eventFilters.includes(calendarEvent.title);
+}
+
+function formatCalendarEventsForCell(calendarEventsForCell) {
+  var resultStr = '';
+  calendarEventsForCell.forEach(function(calendarEvent) {
+    const dayNumber = calendarEvent.startDateTime.getDate();
+    var prefix = calendarEvent.title.endsWith('?') ? '[?] ' : '';
+    resultStr += prefix + calendarEvent.startDateTime.getDayStr() + ' ' + dayNumber + ': ' + (dayNumber <= 9 ? ' ' : '') + calendarEvent.title + '\n';
+  });
+  return resultStr.trim('\n');
 }
