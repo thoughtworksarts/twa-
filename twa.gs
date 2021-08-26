@@ -12,6 +12,7 @@ var config = {
     assignmentCol: 8
   },
   timelineSync: {
+    timelineTab: 'Timeline',
     dateCol: 3,
     eventCol: 4,
     filterRow: 2,
@@ -24,9 +25,18 @@ var config = {
 }
 
 function customOnEdit() {
-  if(state.spreadsheet.getActiveSheet().getName() === config.projectSync.sourceTab || state.spreadsheet.getActiveSheet().getName() === config.projectSync.handsTab) {
+  const activeSubsheet = state.spreadsheet.getActiveSheet();
+  const activeSubsheetName = activeSubsheet.getName();
+  const activeColumn = activeSubsheet.getActiveRange().getColumn();
+  if(activeSubsheetName === config.projectSync.sourceTab || activeSubsheetName === config.projectSync.handsTab) {
     syncProjects();
+  } else if(activeSubsheetName === config.timelineSync.timelineTab && activeColumn === config.timelineSync.eventCol) {
+    syncTimelineEvents();
   }
+}
+
+function customUpdates() {
+  syncTimelineEvents();
 }
 
 function getNameSubstitution(name) {
@@ -113,11 +123,7 @@ function copyProjectsAssignmentValues(sourceTab, destinationTab) {
   destinationRange.setValues(sourceRange.getValues());
 }
 
-function updateSubsheets() {
-  updateTimelineSubsheet();
-}
-
-function updateTimelineSubsheet() {
+function syncTimelineEvents() {
   var timelineRanges = getTimelineRanges(state.spreadsheet.getSheetByName('Timeline'));
   const calendarEvents = getTWACalendarEvents();
 
