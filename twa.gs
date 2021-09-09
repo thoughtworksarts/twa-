@@ -134,6 +134,8 @@ function copyProjectsAssignmentValues(sourceTab, destinationTab) {
 
 function syncTimelineEvents() {
   config.userProperties.setProperty(config.timelineSync.listOfUpcomingEventsPropertyKey, '');
+  var today = new Date();
+  var oneWeekAgo = new Date(today.setDate(today.getDate() - 7));
   var timelineRanges = getTimelineRanges(state.spreadsheet.getSheetByName('Timeline'));
   const calendarEvents = getTWACalendarEvents();
   var listOfUpcomingEventsForAlert = '';
@@ -143,7 +145,9 @@ function syncTimelineEvents() {
     if(weekCommenceDate instanceof Date) {
       var calendarEventsThisWeek = findCalendarEventsThisWeek(weekCommenceDate, calendarEvents, timelineRanges.eventFilters);
       timelineRanges.eventValues[i][0] = calendarEventsThisWeek.length > 0 ? formatCalendarEventsForCell(calendarEventsThisWeek) : '';
-      listOfUpcomingEventsForAlert += calendarEventsThisWeek.length > 0 ? formatCalendarEventsForAlert(calendarEventsThisWeek) : '';
+      if(oneWeekAgo < weekCommenceDate) {
+        listOfUpcomingEventsForAlert += calendarEventsThisWeek.length > 0 ? formatCalendarEventsForAlert(calendarEventsThisWeek) : '';
+      }
     }
   }
 
