@@ -14,6 +14,7 @@ var config = {
   timelineSync: {
     timelineTab: 'Timeline',
     listOfUpcomingEventsPropertyKey: 'listOfUpcomingEvents',
+    eventsFromDate: 'March 29, 2021',
     dateCol: 3,
     eventCol: 4,
     filterRow: 2,
@@ -166,7 +167,7 @@ function getTimelineRanges(timelineSheet) {
 }
 
 function getTWACalendarEvents() {
-  const today = new Date();
+  const today = new Date(config.timelineSync.eventsFromDate);
   const threeYears = new Date();
   threeYears.setFullYear(threeYears.getFullYear() + 3);
   return getCalendarEvents(state.twaCalendar, today, threeYears);
