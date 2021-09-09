@@ -207,31 +207,39 @@ function formatCalendarEventsForAlert(calendarEventsForAlert) {
 }
 
 function buildCalendarEventCellLine(calendarEvent) {
-  const dayNumber = calendarEvent.startDateTime.getDate();
+  const dayNumberStart = calendarEvent.startDateTime.getDate();
+  const dayNumberEnd = getDateMinusFewSeconds(calendarEvent.endDateTime).getDate();
   const unsureDate = calendarEvent.title.endsWith('?');
   const prefix = unsureDate ? '[?] ' : '';
 
   return prefix +
          calendarEvent.startDateTime.getDayShortStr() + ' ' +
-         dayNumber + ': ' +
-         (dayNumber <= 9 && !unsureDate ? ' ' : '') +
+         dayNumberStart +
+         (dayNumberStart === dayNumberEnd ? '' : '-' + dayNumberEnd) + ': ' +
+         (dayNumberStart <= 9 && dayNumberStart === dayNumberEnd && !unsureDate ? ' ' : '') +
          calendarEvent.title + '\n';
 }
 
 function buildCalendarEventAlertLine(calendarEvent) {
-  const dayNumber = calendarEvent.startDateTime.getDate();
+  const dayNumberStart = calendarEvent.startDateTime.getDate();
+  const dayNumberEnd = getDateMinusFewSeconds(calendarEvent.endDateTime).getDate();
   const unsureDate = calendarEvent.title.endsWith('?');
   const prefix = unsureDate ? '[?] ' : '';
 
   return prefix +
          calendarEvent.startDateTime.getDayLongStr() + ', ' +
          calendarEvent.startDateTime.getMonthLongStr() + ' ' +
-         dayNumber + ': ' +
-         (dayNumber <= 9 && !unsureDate ? ' ' : '') +
+         dayNumberStart +
+         (dayNumberStart === dayNumberEnd ? '' : '-' + dayNumberEnd) + ': ' +
+         (dayNumberStart <= 9 && dayNumberStart === dayNumberEnd && !unsureDate ? ' ' : '') +
          calendarEvent.title + '\n';
 }
 
 function alertListOfUpcomingEvents() {
   var listOfUpcomingEvents = config.userProperties.getProperty(config.timelineSync.listOfUpcomingEventsPropertyKey) || '';
   alert(listOfUpcomingEvents.length == 0 ? 'Processing updates... try again in a minute.' : listOfUpcomingEvents);
+}
+
+function getDateMinusFewSeconds(givenDate) {
+  return new Date(givenDate - 5000);
 }
