@@ -28,12 +28,12 @@ var config = {
 }
 
 function customOnEdit() {
-  const activeSubsheet = state.spreadsheet.getActiveSheet();
-  const activeSubsheetName = activeSubsheet.getName();
-  const activeColumn = activeSubsheet.getActiveRange().getColumn();
-  if(activeSubsheetName === config.projectSync.sourceSheetName || activeSubsheetName === config.projectSync.handsSheetName) {
+  const activeSheet = state.spreadsheet.getActiveSheet();
+  const activeSheetName = activeSheet.getName();
+  const activeColumn = activeSheet.getActiveRange().getColumn();
+  if(activeSheetName === config.projectSync.sourceSheetName || activeSheetName === config.projectSync.handsSheetName) {
     syncProjects();
-  } else if(activeSubsheetName === config.timelineSync.timelineSheetName && activeColumn === config.timelineSync.eventCol) {
+  } else if(activeSheetName === config.timelineSync.timelineSheetName && activeColumn === config.timelineSync.eventCol) {
     syncTimelineEvents();
   }
 }
@@ -52,14 +52,14 @@ function getNameSubstitution(name) {
   return name;
 }
 
-function preProcessSubsheets() {
-  state.valuesSubsheet = new ValuesSubsheet(state.spreadsheet, '(workings)', { start:'G3', end:'G5' });
+function preProcessSheets() {
+  state.valuesSheet = new ValuesSheet(state.spreadsheet, '(workings)', { start:'G3', end:'G5' });
   const calendarId = state.spreadsheet.getSheetByName('(workings)').getRange('H3').getValue();
   state.twaCalendar = CalendarApp.getCalendarById(calendarId);
-  buildTodoAndySubsheet();
+  buildTodoAndySheet();
 }
 
-function buildTodoAndySubsheet() {
+function buildTodoAndySheet() {
   const range = {
     offsets: {
       row: 2,
@@ -96,10 +96,10 @@ function buildTodoAndySubsheet() {
     sections.todo.columns.durationHours
   ];
 
-  state.eventSubsheets.push(new EventSubsheet(state.spreadsheet, 'Todo-Andy', '630855359', range, sections, triggerCols));
+  state.eventSheets.push(new EventSheet(state.spreadsheet, 'Todo-Andy', '630855359', range, sections, triggerCols));
 }
 
-function postProcessSubsheets() {
+function postProcessSheets() {
   state.validEventCategories = ['Todo'];
 }
 
