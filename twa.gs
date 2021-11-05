@@ -4,15 +4,15 @@ var config = {
     id: '1jvrit8ybRObHLCh3hNBdQnANssKyLy6UR0SFTTCIusY'
   },
   projectSync: {
-    handsTab: 'Hands',
-    sourceTab: 'Projects',
-    destinationSheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
-    destinationTab: 'Current Projects',
+    handsSheetName: 'Hands',
+    sourceSheetName: 'Projects',
+    destinationSpreadsheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
+    destinationSheetName: 'Current Projects',
     assignmentRow: 5,
     assignmentCol: 8
   },
   timelineSync: {
-    timelineTab: 'Timeline',
+    timelineSheetName: 'Timeline',
     listOfUpcomingEventsPropertyKey: 'listOfUpcomingEvents',
     eventsFromDate: 'March 29, 2021',
     dateCol: 3,
@@ -31,9 +31,9 @@ function customOnEdit() {
   const activeSubsheet = state.spreadsheet.getActiveSheet();
   const activeSubsheetName = activeSubsheet.getName();
   const activeColumn = activeSubsheet.getActiveRange().getColumn();
-  if(activeSubsheetName === config.projectSync.sourceTab || activeSubsheetName === config.projectSync.handsTab) {
+  if(activeSubsheetName === config.projectSync.sourceSheetName || activeSubsheetName === config.projectSync.handsSheetName) {
     syncProjects();
-  } else if(activeSubsheetName === config.timelineSync.timelineTab && activeColumn === config.timelineSync.eventCol) {
+  } else if(activeSubsheetName === config.timelineSync.timelineSheetName && activeColumn === config.timelineSync.eventCol) {
     syncTimelineEvents();
   }
 }
@@ -109,26 +109,26 @@ function isSpecificValidEventData(row, section) {
 }
 
 function syncProjects() {
-  var sourceSheet = SpreadsheetApp.openById(config.gsheet.id);
-  var sourceTab = sourceSheet.getSheetByName(config.projectSync.sourceTab);
-  var destinationSheet = SpreadsheetApp.openById(config.projectSync.destinationSheetID);
-  var destinationTab = destinationSheet.getSheetByName(config.projectSync.destinationTab);
+  var sourceSpreadsheet = SpreadsheetApp.openById(config.gsheet.id);
+  var sourceSheet = sourceSpreadsheet.getSheetByName(config.projectSync.sourceSheetName);
+  var destinationSpreadsheet = SpreadsheetApp.openById(config.projectSync.destinationSpreadsheetID);
+  var destinationSheet = destinationSpreadsheet.getSheetByName(config.projectSync.destinationSheetName);
 
-  overwriteProjectsWithRichTextValues(sourceTab, destinationTab);
-  copyProjectsAssignmentValues(sourceTab, destinationTab);
+  overwriteProjectsWithRichTextValues(sourceSheet, destinationSheet);
+  copyProjectsAssignmentValues(sourceSheet, destinationSheet);
 }
 
-function overwriteProjectsWithRichTextValues(sourceTab, destinationTab) {
-  var sourceRange = sourceTab.getRange(1, 1, sourceTab.getMaxRows(), sourceTab.getMaxColumns());
-  var destinationRange = destinationTab.getRange(1, 1, sourceRange.getNumRows(), sourceRange.getNumColumns());
+function overwriteProjectsWithRichTextValues(sourceSheet, destinationSheet) {
+  var sourceRange = sourceSheet.getRange(1, 1, sourceSheet.getMaxRows(), sourceSheet.getMaxColumns());
+  var destinationRange = destinationSheet.getRange(1, 1, sourceRange.getNumRows(), sourceRange.getNumColumns());
   destinationRange.clearContent();
   destinationRange.setRichTextValues(sourceRange.getRichTextValues());
 }
 
-function copyProjectsAssignmentValues(sourceTab, destinationTab) {
-  var numRows = sourceTab.getMaxRows() - config.projectSync.assignmentRow;
-  var sourceRange = sourceTab.getRange(config.projectSync.assignmentRow, config.projectSync.assignmentCol, numRows, 1);
-  var destinationRange = destinationTab.getRange(5, 8, numRows, 1);
+function copyProjectsAssignmentValues(sourceSheet, destinationSheet) {
+  var numRows = sourceSheet.getMaxRows() - config.projectSync.assignmentRow;
+  var sourceRange = sourceSheet.getRange(config.projectSync.assignmentRow, config.projectSync.assignmentCol, numRows, 1);
+  var destinationRange = destinationSheet.getRange(5, 8, numRows, 1);
   destinationRange.setValues(sourceRange.getValues());
 }
 
@@ -136,7 +136,7 @@ function syncTimelineEvents() {
   config.userProperties.setProperty(config.timelineSync.listOfUpcomingEventsPropertyKey, '');
   var today = new Date();
   var oneWeekAgo = new Date(today.setDate(today.getDate() - 7));
-  var timelineRanges = getTimelineRanges(state.spreadsheet.getSheetByName('Timeline'));
+  var timelineRanges = getTimelineRanges(state.spreadsheet.getSheetByName(config.timelineSync.timelineSheetName));
   const calendarEvents = getTWACalendarEvents();
   var listOfUpcomingEventsForAlert = '';
 
