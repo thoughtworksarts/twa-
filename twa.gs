@@ -53,7 +53,7 @@ function getNameSubstitution(name) {
 }
 
 function preProcessSubsheets() {
-  state.personValuesSubsheet = new PersonValuesSubsheet(state.spreadsheet, '(workings)', { start:'G3', end:'G5' });
+  state.valuesSubsheet = new ValuesSubsheet(state.spreadsheet, '(workings)', { start:'G3', end:'G5' });
   const calendarId = state.spreadsheet.getSheetByName('(workings)').getRange('H3').getValue();
   state.twaCalendar = CalendarApp.getCalendarById(calendarId);
   buildTodoAndySubsheet();
