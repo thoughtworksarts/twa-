@@ -231,8 +231,8 @@ function buildCalendarEventAlertLine(calendarEvent) {
   const prefix = unsureDate ? '[?] ' : '';
 
   return prefix +
-         calendarEvent.startDateTime.getDayLongStr() + ', ' +
-         calendarEvent.startDateTime.getMonthLongStr() + ' ' +
+         calendarEvent.startDateTime.getDayStr() + ', ' +
+         calendarEvent.startDateTime.getMonthStr() + ' ' +
          dayNumberStart +
          (dayNumberStart === dayNumberEnd ? '' : '-' + dayNumberEnd) + ': ' +
          (dayNumberStart <= 9 && dayNumberStart === dayNumberEnd && !unsureDate ? ' ' : '') +
