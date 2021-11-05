@@ -217,7 +217,7 @@ function buildCalendarEventCellLine(calendarEvent) {
   const prefix = unsureDate ? '[?] ' : '';
 
   return prefix +
-         calendarEvent.startDateTime.getDayShortStr() + ' ' +
+         calendarEvent.startDateTime.getDayStr() + ' ' +
          dayNumberStart +
          (dayNumberStart === dayNumberEnd ? '' : '-' + dayNumberEnd) + ': ' +
          (dayNumberStart <= 9 && dayNumberStart === dayNumberEnd && !unsureDate ? ' ' : '') +
