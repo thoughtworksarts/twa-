@@ -99,7 +99,7 @@ function buildTodoAndySheet() {
   state.eventSheets.push(new EventSheet(state.spreadsheet, 'Todo-Andy', '630855359', range, sections, triggerCols));
 }
 
-function postProcessSheets() {
+function setValidEventCategories() {
   state.validEventCategories = ['Todo'];
 }
 
