@@ -97,10 +97,7 @@ function buildTodoAndySheet() {
   ];
 
   state.scriptSheets.push(new ScriptSheet(state.spreadsheet, 'Todo-Andy', '630855359', scriptRange, widgets, triggerCols));
-}
-
-function setValidEventCategories() {
-  state.validEventCategories = ['Todo'];
+  state.scriptResponsiveWidgets.push('Todo');
 }
 
 function isSpecificValidEventData(row, widget) {
