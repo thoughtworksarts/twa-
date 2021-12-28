@@ -96,7 +96,7 @@ function buildTodoAndySheet() {
     widgets.todo.columns.durationHours
   ];
 
-  state.scriptSheets.push(new ScriptSheet(state.spreadsheet, 'Todo-Andy', '630855359', scriptRange, widgets, triggerCols));
+  state.scriptSheets.push(new EventSheet(state.spreadsheet, 'Todo-Andy', '630855359', scriptRange, widgets, triggerCols));
   state.scriptResponsiveWidgets.push('Todo');
 }
 
@@ -171,7 +171,7 @@ function getTWACalendarEvents() {
   const today = new Date(config.timelineSync.eventsFromDate);
   const threeYears = new Date();
   threeYears.setFullYear(threeYears.getFullYear() + 3);
-  return getCalendarEvents(state.twaCalendar, today, threeYears);
+  return state.googleCalendar.getCalendarEvents(state.twaCalendar, today, threeYears);
 }
 
 function findCalendarEventsThisWeek(weekCommenceDate, calendarEvents, eventFilters) {
