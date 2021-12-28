@@ -60,7 +60,7 @@ function preProcessSheets() {
 }
 
 function buildTodoAndySheet() {
-  const range = {
+  const scriptRange = {
     offsets: {
       row: 2,
       col: 2
@@ -80,7 +80,7 @@ function buildTodoAndySheet() {
         startTime: 6,
         durationHours: 7
       },
-      rangeColumns: {},
+      scriptRangeColumns: {},
       hasDoneCol: false,
       hasEvents: true,
       allowFillInTheBlanksDates: true
@@ -96,7 +96,7 @@ function buildTodoAndySheet() {
     widgets.todo.columns.durationHours
   ];
 
-  state.scriptSheets.push(new ScriptSheet(state.spreadsheet, 'Todo-Andy', '630855359', range, widgets, triggerCols));
+  state.scriptSheets.push(new ScriptSheet(state.spreadsheet, 'Todo-Andy', '630855359', scriptRange, widgets, triggerCols));
 }
 
 function setValidEventCategories() {
@@ -104,7 +104,7 @@ function setValidEventCategories() {
 }
 
 function isSpecificValidEventData(row, widget) {
-  var timing = row[widget.rangeColumns.timing];
+  var timing = row[widget.scriptRangeColumns.timing];
   return timing == '(1) Now' || timing == '(2) Next';
 }
 
