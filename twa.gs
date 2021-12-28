@@ -82,7 +82,7 @@ function buildTodoAndySheet() {
       },
       scriptRangeColumns: {},
       hasDoneCol: false,
-      hasEvents: true,
+      hasCalendarEvents: true,
       allowFillInTheBlanksDates: true
     }
   };
@@ -100,7 +100,7 @@ function buildTodoAndySheet() {
   state.scriptResponsiveWidgets.push('Todo');
 }
 
-function isSpecificValidEventData(row, widget) {
+function isSpecificValidCalendarEvent(row, widget) {
   var timing = row[widget.scriptRangeColumns.timing];
   return timing == '(1) Now' || timing == '(2) Next';
 }
