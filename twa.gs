@@ -69,7 +69,7 @@ function buildTodoAndySheet() {
     maxCols: 11
   };
 
-  const sections = {
+  const widgets = {
     todo: {
       columns: {
         label: 2,
@@ -88,23 +88,23 @@ function buildTodoAndySheet() {
   };
 
   const triggerCols = [
-    sections.todo.columns.noun,
-    sections.todo.columns.verb,
-    sections.todo.columns.timing,
-    sections.todo.columns.workDate,
-    sections.todo.columns.startTime,
-    sections.todo.columns.durationHours
+    widgets.todo.columns.noun,
+    widgets.todo.columns.verb,
+    widgets.todo.columns.timing,
+    widgets.todo.columns.workDate,
+    widgets.todo.columns.startTime,
+    widgets.todo.columns.durationHours
   ];
 
-  state.eventSheets.push(new EventSheet(state.spreadsheet, 'Todo-Andy', '630855359', range, sections, triggerCols));
+  state.scriptSheets.push(new ScriptSheet(state.spreadsheet, 'Todo-Andy', '630855359', range, widgets, triggerCols));
 }
 
 function setValidEventCategories() {
   state.validEventCategories = ['Todo'];
 }
 
-function isSpecificValidEventData(row, section) {
-  var timing = row[section.rangeColumns.timing];
+function isSpecificValidEventData(row, widget) {
+  var timing = row[widget.rangeColumns.timing];
   return timing == '(1) Now' || timing == '(2) Next';
 }
 
