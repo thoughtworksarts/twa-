@@ -176,7 +176,7 @@ function getTWACalendarEvents() {
 
 function findCalendarEventsThisWeek(weekCommenceDate, calendarEvents, eventFilters) {
   var result = [];
-  calendarEvents.forEach(function(calendarEvent) {
+  calendarEvents.forEach((calendarEvent) => {
     if(isValidCalendarEventForWeek(calendarEvent, weekCommenceDate, eventFilters)) {
       result.push(calendarEvent);
     }
@@ -193,7 +193,7 @@ function isValidCalendarEventForWeek(calendarEvent, weekCommenceDate, eventFilte
 
 function formatCalendarEventsForCell(calendarEventsForCell) {
   var resultStr = '';
-  calendarEventsForCell.forEach(function(calendarEvent) {
+  calendarEventsForCell.forEach((calendarEvent) => {
     resultStr += buildCalendarEventCellLine(calendarEvent)
   });
   return resultStr.trim('\n');
@@ -201,7 +201,7 @@ function formatCalendarEventsForCell(calendarEventsForCell) {
 
 function formatCalendarEventsForAlert(calendarEventsForAlert) {
   var resultStr = '';
-  calendarEventsForAlert.forEach(function(calendarEvent) {
+  calendarEventsForAlert.forEach((calendarEvent) => {
     resultStr += buildCalendarEventAlertLine(calendarEvent)
   });
   return resultStr;
