@@ -79,7 +79,6 @@ function buildTodoAndySheet() {
           startTime: 6,
           durationHours: 7
         },
-        scriptRangeColumns: {},
         hasDoneCol: false,
         hasEvents: true,
         allowFillInTheBlanksDates: true
