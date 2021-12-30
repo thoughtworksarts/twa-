@@ -102,7 +102,7 @@ function buildTodoAndySheet() {
   registerSheetForFeature(todoAndySheet, state.features.updateCalendarFromSpreadsheet);
 }
 
-function isSpecificValidEvent(row, widget) {
+function customEventWidgetValidation(row, widget) {
   var timing = row[widget.scriptRangeColumns.timing];
   return timing == '(1) Now' || timing == '(2) Next';
 }
