@@ -99,7 +99,7 @@ function buildTodoAndySheet() {
     widgets.todo.columns.durationHours
   ];
 
-  var todoAndySheet = new EventSheet('Todo-Andy', '630855359', sheetConfig);
+  var todoAndySheet = new ScriptSheet('Todo-Andy', '630855359', sheetConfig);
   registerSheetForFeature(todoAndySheet, state.features.updateCalendarFromSpreadsheet);
 }
 
