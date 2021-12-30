@@ -171,7 +171,7 @@ function getTWACalendarEvents() {
   const today = new Date(config.timelineSync.eventsFromDate);
   const threeYears = new Date();
   threeYears.setFullYear(threeYears.getFullYear() + 3);
-  return state.googleCalendar.getCalendarEvents(state.twaCalendar, today, threeYears);
+  return state.googleCalendar.getEvents(state.twaCalendar, today, threeYears);
 }
 
 function findCalendarEventsThisWeek(weekCommenceDate, calendarEvents, eventFilters) {
