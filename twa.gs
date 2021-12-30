@@ -42,9 +42,7 @@ function customOnOpen() {
   SpreadsheetApp.getUi().createMenu('Generate')
       .addItem('List of Upcoming Events', 'alertListOfUpcomingEvents')
       .addToUi();
-}
 
-function customUpdates() {
   syncTimelineEvents();
 }
 
