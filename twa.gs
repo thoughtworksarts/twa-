@@ -96,8 +96,8 @@ function buildTodoAndySheet() {
     widgets.todo.columns.durationHours
   ];
 
-  state.scriptSheets.push(new EventSheet(state.spreadsheet, 'Todo-Andy', '630855359', scriptRange, widgets, triggerCols));
-  state.scriptResponsiveWidgets.push('Todo');
+  var todoAndySheet = new EventSheet(state.spreadsheet, 'Todo-Andy', '630855359', scriptRange, widgets, triggerCols);
+  registerSheetForFeature(todoAndySheet, ['Todo'], state.features.updateCalendarFromSpreadsheet);
 }
 
 function isSpecificValidEvent(row, widget) {
