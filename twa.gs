@@ -53,41 +53,46 @@ function getNameSubstitution(name) {
 }
 
 function preProcessSheets() {
-  state.valuesSheet = new ValuesSheet(state.spreadsheet, '(workings)', { start:'G3', end:'G5' });
+  state.valuesSheet = new ValuesSheet('(workings)', { scriptRange: { start:'G3', end:'G5' }});
   const calendarId = state.spreadsheet.getSheetByName('(workings)').getRange('H3').getValue();
   state.twaCalendar = CalendarApp.getCalendarById(calendarId);
   buildTodoAndySheet();
 }
 
 function buildTodoAndySheet() {
-  const scriptRange = {
-    offsets: {
-      row: 2,
-      col: 2
-    },
-    maxRows: 500,
-    maxCols: 11
-  };
-
-  const widgets = {
-    todo: {
-      columns: {
-        label: 2,
-        noun: 2,
-        verb: 3,
-        timing: 4,
-        workDate: 5,
-        startTime: 6,
-        durationHours: 7
+  const sheetConfig = {
+    scriptRange: {
+      offsets: {
+        row: 2,
+        col: 2
       },
-      scriptRangeColumns: {},
-      hasDoneCol: false,
-      hasEvents: true,
-      allowFillInTheBlanksDates: true
-    }
+      maxRows: 500,
+      maxCols: 11
+    },
+
+    widgets: {
+      todo: {
+        columns: {
+          label: 2,
+          noun: 2,
+          verb: 3,
+          timing: 4,
+          workDate: 5,
+          startTime: 6,
+          durationHours: 7
+        },
+        scriptRangeColumns: {},
+        hasDoneCol: false,
+        hasEvents: true,
+        allowFillInTheBlanksDates: true
+      }
+    },
+
+    scriptResponsiveWidgetNames: ['Todo']
   };
 
-  const triggerCols = [
+  const widgets = sheetConfig.widgets;
+  sheetConfig.triggerCols = [
     widgets.todo.columns.noun,
     widgets.todo.columns.verb,
     widgets.todo.columns.timing,
@@ -96,8 +101,8 @@ function buildTodoAndySheet() {
     widgets.todo.columns.durationHours
   ];
 
-  var todoAndySheet = new EventSheet(state.spreadsheet, 'Todo-Andy', '630855359', scriptRange, widgets, triggerCols);
-  registerSheetForFeature(todoAndySheet, ['Todo'], state.features.updateCalendarFromSpreadsheet);
+  var todoAndySheet = new EventSheet('Todo-Andy', '630855359', sheetConfig);
+  registerSheetForFeature(todoAndySheet, state.features.updateCalendarFromSpreadsheet);
 }
 
 function isSpecificValidEvent(row, widget) {
