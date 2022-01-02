@@ -65,7 +65,7 @@ function readValuesSheet() {
     name: '(workings)',
     range: 'G3:H5',
     columns: {
-      people: 0,
+      users: 0,
       twaCalendar: 1
     }
   };
