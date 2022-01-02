@@ -3,14 +3,6 @@ var config = {
     name: 'twa—',
     id: '1jvrit8ybRObHLCh3hNBdQnANssKyLy6UR0SFTTCIusY'
   },
-  projectSync: {
-    handsSheetName: 'Hands',
-    sourceSheetName: 'Projects',
-    destinationSpreadsheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
-    destinationSheetName: 'Current Projects',
-    assignmentRow: 5,
-    assignmentCol: 8
-  },
   timelineSync: {
     timelineSheetName: 'Timeline',
     listOfUpcomingEventsPropertyKey: 'listOfUpcomingEvents',
@@ -57,6 +49,7 @@ function setUpSheets() {
   state.twaCalendar = CalendarApp.getCalendarById(calendarId);
 
   setUpValuesSheet();
+  setUpProjectsSheet();
   setUpTodoAndySheet();
 }
 
@@ -67,6 +60,18 @@ function setUpValuesSheet() {
     columns: {
       users: 0,
       twaCalendar: 1
+    }
+  });
+}
+
+function setUpProjectsSheet() {
+  registerFeatureSheet(state.features.replicateSheetInExternalSpreadsheet, {
+    name: 'Projects',
+    destinationSpreadsheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
+    destinationSheetName: 'Current Projects',
+    nonRichTextColumnOverwrite: {
+      column: 8,
+      startRow: 5
     }
   });
 }
@@ -105,36 +110,12 @@ function setUpTodoAndySheet() {
     widgets.todo.columns.durationHours
   ];
 
-  registerFeatureSheet(sheetConfig, state.features.updateCalendarFromSpreadsheet);
+  registerFeatureSheet(state.features.updateCalendarFromSpreadsheet, sheetConfig);
 }
 
 function customEventWidgetValidation(row, widget) {
   var timing = row[widget.columns.timing];
   return timing == '(1) Now' || timing == '(2) Next';
-}
-
-function syncProjects() {
-  var sourceSpreadsheet = SpreadsheetApp.openById(config.gsheet.id);
-  var sourceSheet = sourceSpreadsheet.getSheetByName(config.projectSync.sourceSheetName);
-  var destinationSpreadsheet = SpreadsheetApp.openById(config.projectSync.destinationSpreadsheetID);
-  var destinationSheet = destinationSpreadsheet.getSheetByName(config.projectSync.destinationSheetName);
-
-  overwriteProjectsWithRichTextValues(sourceSheet, destinationSheet);
-  copyProjectsAssignmentValues(sourceSheet, destinationSheet);
-}
-
-function overwriteProjectsWithRichTextValues(sourceSheet, destinationSheet) {
-  var sourceRange = sourceSheet.getRange(1, 1, sourceSheet.getMaxRows(), sourceSheet.getMaxColumns());
-  var destinationRange = destinationSheet.getRange(1, 1, sourceRange.getNumRows(), sourceRange.getNumColumns());
-  destinationRange.clearContent();
-  destinationRange.setRichTextValues(sourceRange.getRichTextValues());
-}
-
-function copyProjectsAssignmentValues(sourceSheet, destinationSheet) {
-  var numRows = sourceSheet.getMaxRows() - config.projectSync.assignmentRow;
-  var sourceRange = sourceSheet.getRange(config.projectSync.assignmentRow, config.projectSync.assignmentCol, numRows, 1);
-  var destinationRange = destinationSheet.getRange(5, 8, numRows, 1);
-  destinationRange.setValues(sourceRange.getValues());
 }
 
 function syncTimelineEvents() {
