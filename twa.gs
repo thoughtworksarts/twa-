@@ -75,25 +75,16 @@ function setUpTodoAndySheet() {
   const sheetConfig = {
     name: 'Todo-Andy',
     id: '630855359',
-    scriptRange: {
-      offsets: {
-        row: 2,
-        col: 2
-      },
-      maxRows: 500,
-      maxCols: 11
-    },
-
     widgets: {
       todo: {
         columns: {
-          label: 2,
-          noun: 2,
-          verb: 3,
-          timing: 4,
-          workDate: 5,
-          startTime: 6,
-          durationHours: 7
+          label: 1,
+          noun: 1,
+          verb: 2,
+          timing: 3,
+          workDate: 4,
+          startTime: 5,
+          durationHours: 6
         },
         hasDoneCol: false,
         hasEvents: true,
@@ -118,7 +109,7 @@ function setUpTodoAndySheet() {
 }
 
 function customEventWidgetValidation(row, widget) {
-  var timing = row[widget.scriptRangeColumns.timing];
+  var timing = row[widget.columns.timing];
   return timing == '(1) Now' || timing == '(2) Next';
 }
 
