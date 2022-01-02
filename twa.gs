@@ -50,29 +50,28 @@ function getNameSubstitution(name) {
   return name;
 }
 
-function preProcessSheets() {
+function setUpSheets() {
 
 
   const calendarId = state.spreadsheet.getSheetByName('(workings)').getRange('H3').getValue();
   state.twaCalendar = CalendarApp.getCalendarById(calendarId);
 
-  readValuesSheet();
-  buildTodoAndySheet();
+  setUpValuesSheet();
+  setUpTodoAndySheet();
 }
 
-function readValuesSheet() {
-  const sheetConfig = {
+function setUpValuesSheet() {
+  registerValuesSheet({
     name: '(workings)',
     range: 'G3:H5',
     columns: {
       users: 0,
       twaCalendar: 1
     }
-  };
-  state.valuesSheet = new ValuesSheet(sheetConfig);
+  });
 }
 
-function buildTodoAndySheet() {
+function setUpTodoAndySheet() {
   const sheetConfig = {
     name: 'Todo-Andy',
     id: '630855359',
@@ -115,8 +114,7 @@ function buildTodoAndySheet() {
     widgets.todo.columns.durationHours
   ];
 
-  var todoAndySheet = new ScriptSheet(sheetConfig);
-  registerSheetForFeature(todoAndySheet, state.features.updateCalendarFromSpreadsheet);
+  registerFeatureSheet(sheetConfig, state.features.updateCalendarFromSpreadsheet);
 }
 
 function customEventWidgetValidation(row, widget) {
