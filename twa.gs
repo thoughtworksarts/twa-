@@ -51,10 +51,25 @@ function getNameSubstitution(name) {
 }
 
 function preProcessSheets() {
-  state.valuesSheet = new ValuesSheet({ name: '(workings)', scriptRange: { start:'G3', end:'G5' }});
+
+
   const calendarId = state.spreadsheet.getSheetByName('(workings)').getRange('H3').getValue();
   state.twaCalendar = CalendarApp.getCalendarById(calendarId);
+
+  readValuesSheet();
   buildTodoAndySheet();
+}
+
+function readValuesSheet() {
+  const sheetConfig = {
+    name: '(workings)',
+    range: 'G3:H5',
+    columns: {
+      people: 0,
+      twaCalendar: 1
+    }
+  };
+  state.valuesSheet = new ValuesSheet(sheetConfig);
 }
 
 function buildTodoAndySheet() {
