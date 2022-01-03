@@ -14,6 +14,7 @@ var config = {
   },
   toggles: {
     performDataUpdates: true,
+    logAllEvents: false,
     showLogAlert: false
   },
   userProperties: PropertiesService.getUserProperties()
