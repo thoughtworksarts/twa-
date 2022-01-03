@@ -83,8 +83,10 @@ function setUpTodoAndySheet() {
     id: '630855359',
     widgets: {
       todo: {
+        name: {
+          column: 1, rowOffset: -2
+        },
         columns: {
-          label: 1,
           noun: 1,
           verb: 2,
           timing: 3,
