@@ -21,12 +21,9 @@ var config = {
 }
 
 function customOnEdit() {
-  const activeSheet = state.spreadsheet.getActiveSheet();
   const activeSheetName = activeSheet.getName();
   const activeColumn = activeSheet.getActiveRange().getColumn();
-  if(activeSheetName === config.projectSync.sourceSheetName || activeSheetName === config.projectSync.handsSheetName) {
-    syncProjects();
-  } else if(activeSheetName === config.timelineSync.timelineSheetName && activeColumn === config.timelineSync.eventCol) {
+  if(activeSheetName === config.timelineSync.timelineSheetName && activeColumn === config.timelineSync.eventCol) {
     syncTimelineEvents();
   }
 }
