@@ -91,7 +91,6 @@ function setUpTodoAndySheet() {
           startTime: 5,
           durationHours: 6
         },
-        hasDoneCol: false,
         hasEvents: true,
         allowFillInTheBlanksDates: true
       }
