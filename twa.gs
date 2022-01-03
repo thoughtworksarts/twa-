@@ -36,10 +36,6 @@ function customOnOpen() {
   syncTimelineEvents();
 }
 
-function getNameSubstitution(name) {
-  return name;
-}
-
 function setUpSheets() {
 
 
