@@ -84,22 +84,22 @@ function setUpTodoAndySheet() {
     widgets: {
       todo: {
         name: {
-          column: 1, rowOffset: -2
+          column: 'B', rowOffset: -2
         },
         columns: {
-          noun: 1,
-          verb: 2,
-          timing: 3,
-          workDate: 4,
-          startTime: 5,
-          durationHours: 6
+          noun: 'B',
+          verb: 'C',
+          timing: 'D',
+          workDate: 'E',
+          startTime: 'F',
+          durationHours: 'G'
         },
         hasEvents: true,
         allowFillInTheBlanksDates: true
       }
     },
 
-    scriptResponsiveWidgetNames: ['Todo']
+    scriptResponsiveWidgetNames: ['Todo:Andy']
   };
 
   const widgets = sheetConfig.widgets;
