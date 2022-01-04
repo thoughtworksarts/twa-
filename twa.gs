@@ -51,7 +51,7 @@ function setUpValuesSheet() {
   registerValuesSheet({
     name: '(workings)',
     range: 'G3:H5',
-    columns: {
+    columnIndices: {
       users: 0,
       twaCalendar: 1
     }
@@ -64,7 +64,7 @@ function setUpProjectsSheet() {
     destinationSpreadsheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
     destinationSheetName: 'Current Projects',
     nonRichTextColumnOverwrite: {
-      column: 8,
+      column: 'H',
       startRow: 5
     }
   });
@@ -96,7 +96,7 @@ function setUpTodoAndySheet() {
   };
 
   const widgets = sheetConfig.widgets;
-  sheetConfig.triggerCols = [
+  sheetConfig.triggerColumns = [
     widgets.todo.columns.noun,
     widgets.todo.columns.verb,
     widgets.todo.columns.timing,
