@@ -10,14 +10,14 @@ var config = {
   }
 }
 
-function setUpSheets() {
-  setUpValuesSheet();
-  setUpProjectsSheet();
-  setUpTimelineSheet();
-  setUpTodoAndySheet();
+function buildSheets() {
+  buildValuesSheet();
+  buildProjectsSheet();
+  buildTimelineSheet();
+  buildTodoAndySheet();
 }
 
-function setUpValuesSheet() {
+function buildValuesSheet() {
   registerValuesSheet({
     name: '(workings)',
     range: 'G3:H5',
@@ -27,8 +27,8 @@ function setUpValuesSheet() {
   });
 }
 
-function setUpProjectsSheet() {
-  registerFeatureSheet(state.features.replicateSheetInExternalSpreadsheet, {
+function buildProjectsSheet() {
+  const config = {
     name: 'Projects',
     destinationSpreadsheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
     destinationSheetName: 'Current Projects',
@@ -36,11 +36,12 @@ function setUpProjectsSheet() {
       column: 'H',
       startRow: 5
     }
-  });
+  };
+  registerFeatureSheet(config, [state.features.replicateSheetInExternalSpreadsheet]);
 }
 
-function setUpTimelineSheet() {
-  registerFeatureSheet(state.features.updateSpreadsheetFromCalendar, {
+function buildTimelineSheet() {
+  const config = {
     name: 'Timeline',
     fromDate: 'March 29, 2021',
     eventsToNumYearsFromNow: 3,
@@ -48,11 +49,12 @@ function setUpTimelineSheet() {
     eventColumn: 'D',
     filterRow: 2,
     beginRow: 4
-  });
+  };
+  registerFeatureSheet(config, [state.features.updateSpreadsheetFromCalendar]);
 }
 
-function setUpTodoAndySheet() {
-  const sheetConfig = {
+function buildTodoAndySheet() {
+  const config = {
     name: 'Todo-Andy',
     id: '630855359',
     widgets: {
@@ -76,8 +78,8 @@ function setUpTodoAndySheet() {
     scriptResponsiveWidgetNames: ['Todo:Andy']
   };
 
-  const widgets = sheetConfig.widgets;
-  sheetConfig.triggerColumns = [
+  const widgets = config.widgets;
+  config.triggerColumns = [
     widgets.todo.columns.noun,
     widgets.todo.columns.verb,
     widgets.todo.columns.timing,
@@ -86,7 +88,7 @@ function setUpTodoAndySheet() {
     widgets.todo.columns.durationHours
   ];
 
-  registerFeatureSheet(state.features.updateCalendarFromSpreadsheet, sheetConfig);
+  registerFeatureSheet(config, [state.features.updateCalendarFromSpreadsheet]);
 }
 
 function customEventWidgetValidation(row, widget) {
