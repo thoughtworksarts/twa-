@@ -35,9 +35,10 @@ function buildProjectsSheet() {
     nonRichTextColumnOverwrite: {
       column: 'H',
       startRow: 5
-    }
+    },
+    features: [ReplicateSheetInExternalSpreadsheet]
   };
-  registerFeatureSheet(config, [state.features.replicateSheetInExternalSpreadsheet]);
+  registerFeatureSheet(config);
 }
 
 function buildTimelineSheet() {
@@ -48,9 +49,10 @@ function buildTimelineSheet() {
     dateColumn: 'C',
     eventColumn: 'D',
     filterRow: 2,
-    beginRow: 4
+    beginRow: 4,
+    features: [UpdateSpreadsheetFromCalendar]
   };
-  registerFeatureSheet(config, [state.features.updateSpreadsheetFromCalendar]);
+  registerFeatureSheet(config);
 }
 
 function buildTodoAndySheet() {
@@ -75,7 +77,8 @@ function buildTodoAndySheet() {
       }
     },
 
-    scriptResponsiveWidgetNames: ['Todo:Andy']
+    scriptResponsiveWidgetNames: ['Todo:Andy'],
+    features: [UpdateCalendarFromSpreadsheet]
   };
 
   const widgets = config.widgets;
@@ -88,7 +91,7 @@ function buildTodoAndySheet() {
     widgets.todo.columns.durationHours
   ];
 
-  registerFeatureSheet(config, [state.features.updateCalendarFromSpreadsheet]);
+  registerFeatureSheet(config);
 }
 
 function customEventWidgetValidation(row, widget) {
