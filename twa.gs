@@ -94,7 +94,7 @@ function buildTodoAndySheet() {
   registerFeatureSheet(config);
 }
 
-function customEventWidgetValidation(row, columns) {
+function isValidCustomSheetEventData(row, columns) {
   var timing = row[columns.zeroBasedIndices.timing];
   return timing == '(1) Now' || timing == '(2) Next';
 }
