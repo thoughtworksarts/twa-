@@ -30,11 +30,13 @@ function buildValuesSheet() {
 function buildProjectsSheet() {
   const config = {
     name: 'Projects',
-    destinationSpreadsheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
-    destinationSheetName: 'Current Projects',
-    nonRichTextColumnOverwrite: {
-      column: 'H',
-      startRow: 5
+    replicateSheetInExternalSpreadsheet: {
+      destinationSpreadsheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
+      destinationSheetName: 'Current Projects',
+      nonRichTextColumnOverwrite: {
+        column: 'H',
+        startRow: 5
+      }
     },
     features: [ReplicateSheetInExternalSpreadsheet]
   };
@@ -44,53 +46,44 @@ function buildProjectsSheet() {
 function buildTimelineSheet() {
   const config = {
     name: 'Timeline',
-    fromDate: 'March 29, 2021',
-    eventsToNumYearsFromNow: 3,
-    dateColumn: 'C',
-    eventColumn: 'D',
-    filterRow: 2,
-    beginRow: 4,
+    updateSpreadsheetFromCalendar: {
+      fromDate: 'March 29, 2021',
+      eventsToNumYearsFromNow: 3,
+      dateColumn: 'C',
+      eventColumn: 'D',
+      filterRow: 2,
+      beginRow: 4
+    },
     features: [UpdateSpreadsheetFromCalendar]
   };
   registerFeatureSheet(config);
 }
 
 function buildTodoAndySheet() {
+  const activeColumns = {
+    noun: 'B',
+    verb: 'C',
+    timing: 'D',
+    workDate: 'E',
+    startTime: 'F',
+    durationHours: 'G'
+  };
   const config = {
     name: 'Todo-Andy',
     id: '630855359',
-    widgets: {
-      todo: {
-        name: {
-          column: 'B', rowOffset: -2
-        },
-        columns: {
-          noun: 'B',
-          verb: 'C',
-          timing: 'D',
-          workDate: 'E',
-          startTime: 'F',
-          durationHours: 'G'
-        },
-        hasEvents: true,
-        allowFillInTheBlanksDates: true
-      }
+    updateCalendarFromSpreadsheet: {
+      widgetCategories: {
+        todo: {
+          name: { column: 'B', rowOffset: -2 },
+          columns: activeColumns,
+          allowFillInTheBlanksDates: true
+        }
+      },
+      scriptResponsiveWidgetNames: ['Todo:Andy']
     },
-
-    scriptResponsiveWidgetNames: ['Todo:Andy'],
+    triggerColumns: Object.values(activeColumns),
     features: [UpdateCalendarFromSpreadsheet]
   };
-
-  const widgets = config.widgets;
-  config.triggerColumns = [
-    widgets.todo.columns.noun,
-    widgets.todo.columns.verb,
-    widgets.todo.columns.timing,
-    widgets.todo.columns.workDate,
-    widgets.todo.columns.startTime,
-    widgets.todo.columns.durationHours
-  ];
-
   registerFeatureSheet(config);
 }
 
