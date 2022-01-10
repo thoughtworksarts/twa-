@@ -81,6 +81,13 @@ function buildTodoAndySheet() {
       },
       scriptResponsiveWidgetNames: ['Todo:Andy']
     },
+    sidebar: {
+      guidance: {
+        type: 'text',
+        title: 'Guidance',
+        text: 'This is custom guidance.'
+      }
+    },
     triggerColumns: Object.values(activeColumns),
     features: [UpdateCalendarFromSpreadsheet]
   };
