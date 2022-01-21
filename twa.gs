@@ -15,6 +15,7 @@ function buildSheets() {
   buildProjectsSheet();
   buildTimelineSheet();
   buildTodoAndySheet();
+  buildReservoirSheet();
 }
 
 function buildValuesSheet() {
@@ -59,18 +60,19 @@ function buildTimelineSheet() {
 }
 
 function buildTodoAndySheet() {
-  const activeColumns = {
-    noun: 'B',
-    verb: 'C',
-    timing: 'D',
-    workDate: 'E',
-    startTime: 'F',
-    durationHours: 'G'
-  };
+  const sections = [
+    'titles',
+    'titlesAboveBelow',
+    'hiddenValues',
+    'headers',
+    'main',
+    'done',
+    'underMain',
+    'underDone'
+  ];
   const config = {
     name: 'Todo-Andy',
     id: '630855359',
-    triggerColumns: Object.values(activeColumns),
     hiddenValueRow: 3,
     features: {
       updateCalendarFromSpreadsheet: {
@@ -78,7 +80,14 @@ function buildTodoAndySheet() {
         widgetCategories: {
           todo: {
             name: { column: 'C', rowOffset: -2 },
-            columns: activeColumns,
+            columns: {
+              noun: 'B',
+              verb: 'C',
+              timing: 'D',
+              workDate: 'E',
+              startTime: 'F',
+              durationHours: 'G'
+            },
             allowFillInTheBlanksDates: true
           }
         },
@@ -87,7 +96,7 @@ function buildTodoAndySheet() {
       collapseDoneSection: {
         numRowsToDisplay: 5
       },
-      resetSpreadsheetStyles: getDefaultSpreadsheetStyles()
+      resetSpreadsheetStyles: getDefaultSheetStyles(sections)
     },
     sidebar: {
       guidance: {
@@ -119,7 +128,7 @@ function buildTodoAndySheet() {
         features: {
           moveMatchingRowsFromMainToDone: {
             priority: 'HIGH_PRIORITY',
-            matchColumn: activeColumns.timing,
+            matchColumn: 'D',
             matchText: ') DONE'
           },
           collapseDoneSection: {
@@ -132,13 +141,58 @@ function buildTodoAndySheet() {
   registerFeatureSheet(config);
 }
 
+function buildReservoirSheet() {
+  const sections = [
+    'titles',
+    'titlesAboveBelow',
+    'headers',
+    'main',
+    'mainSubRanges',
+    'underMain'
+  ];
+  const overrides = {
+    contents: {
+      rowHeight: 95,
+      fontSize: propertyOverrides.IGNORE
+    }
+  };
+  const appends = {
+    contentsSubRanges: [{
+        beginColumnOffset: 0,
+        numColumns: 2,
+        fontSize: 12
+      }, {
+        beginColumnOffset: 2,
+        numColumns: 3,
+        fontSize: 9
+      }
+    ]
+  };
+  const config = {
+    name: 'Reservoir',
+    id: '531646230',
+    features: {
+      resetSpreadsheetStyles: getDefaultSheetStyles(sections, overrides, appends)
+    },
+    sidebar: {
+      guidance: {
+        type: 'text',
+        title: 'Reservoir',
+        text: 'This is guidance on Reservoir sheet. It may be several lines of text, or even rich html? Nunc vulputate mauris imperdiet vehicula faucibus. Curabitur facilisis turpis libero, id volutpat velit aliquet a. Curabitur at euismod mi.'
+      }
+    }
+  };
+  registerFeatureSheet(config);
+}
+
 function isValidCustomSheetEventData(row, columns) {
   var timing = row[columns.zeroBasedIndices.timing];
   return timing == '(1) Now' || timing == '(2) Next';
 }
 
-function getDefaultSpreadsheetStyles() {
-  return {
+function getDefaultSheetStyles(sections, overrides={}, appends={}) {
+  let sheetStyle = {
+    sections: sections,
     titles: {
       fontFamily: 'Roboto Mono',
       fontSize: 24,
@@ -159,15 +213,34 @@ function getDefaultSpreadsheetStyles() {
       border: { top: true, left: false, bottom: true, right: false, vertical: false, horizontal: false, color: '#333333', style: 'SOLID_THICK' },
       rowHeight: 50
     },
-    contentSections: {
+    contents: {
       fontFamily: 'Roboto Mono',
       fontSize: 9,
       fontColor: null,
       border: { top: null, left: false, bottom: null, right: false, vertical: false, horizontal: true, color: '#999999', style: 'SOLID' },
       rowHeight: 40
     },
-    underContentSections: {
+    underContents: {
       border: { top: true, left: false, bottom: null, right: false, vertical: false, horizontal: false, color: '#333333', style: 'SOLID_THICK' }
     }
   };
+  sheetStyle = overrideSheetStyles(sheetStyle, overrides);
+  sheetStyle = appendSheetStyles(sheetStyle, appends);
+  return sheetStyle;
+}
+
+function overrideSheetStyles(sheetStyle, overrides) {
+  for(const sectionKey in overrides) {
+    const section = overrides[sectionKey];
+    for(const propertyKey in section) {
+      const property = section[propertyKey];
+      sheetStyle[sectionKey][propertyKey] = property;
+    }
+  }
+  return sheetStyle;
+}
+
+function appendSheetStyles(sheetStyle, appends) {
+  sheetStyle = Object.assign(sheetStyle, appends);
+  return sheetStyle;
 }
