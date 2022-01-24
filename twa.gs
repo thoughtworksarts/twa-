@@ -163,7 +163,7 @@ function getReservoirSheet() {
     ]
   };
   return {
-    name: 'Reservoir',
+    name: 'Map',
     id: '531646230',
     features: {
       resetSpreadsheetStyles: this.getDefaultSheetStyles(sections, overrides, appends)
@@ -171,8 +171,8 @@ function getReservoirSheet() {
     sidebar: {
       guidance: {
         type: 'text',
-        title: 'Reservoir',
-        text: 'This is guidance on Reservoir sheet. It may be several lines of text, or even rich html? Nunc vulputate mauris imperdiet vehicula faucibus. Curabitur facilisis turpis libero, id volutpat velit aliquet a. Curabitur at euismod mi.'
+        title: 'Map',
+        text: `This tab is based loosely around <a href='https://www.mindmapping.com/mind-map'>Mind Maps</a>, in that is is designed to work in harmony the natural functioning of the human mind and get ideas down in a mental tree-like structure.<br><br>The contents of the 'Map' tab can be refreshed without overthinking heirarchy, priority or other complicating factors, and can be referenced when building and updating Todo lists, or to get an overview of the broad sweep of current concerns.`
       }
     }
   };
