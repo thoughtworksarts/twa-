@@ -153,10 +153,10 @@ function getReservoirSheet() {
   const appends = {
     contentsSubRanges: [{
         beginColumnOffset: 0,
-        numColumns: 2,
+        numColumns: 1,
         fontSize: 12
       }, {
-        beginColumnOffset: 2,
+        beginColumnOffset: 1,
         numColumns: 3,
         fontSize: 9
       }
@@ -172,7 +172,7 @@ function getReservoirSheet() {
       guidance: {
         type: 'text',
         title: 'Map',
-        text: `This tab is based loosely around <a href='https://www.mindmapping.com/mind-map'>Mind Maps</a>, in that is is designed to work in harmony the natural functioning of the human mind and get ideas down in a mental tree-like structure.<br><br>The contents of the 'Map' tab can be refreshed without overthinking heirarchy, priority or other complicating factors, and can be referenced when building and updating Todo lists, or to get an overview of the broad sweep of current concerns.`
+        text: `The 'Map' tab is based loosely around <a href='https://www.mindmapping.com/mind-map'>Mind Maps</a>, in that is is designed to work in harmony the natural functioning of the human mind and get ideas down in a mental tree-like structure.<br><br>All the text fields are free type, no need to worry about whether your edits correctly reference other areas of the dashboard. Just go ahead and start typing in whatever way matches the way things are in your mind.<br><br>There is a hierarchy inherent to mind-mapping but it shouldn't be overthought - arrange things in an intuitive way. Also, there is an inherent prioritization inherent in the positions of branches and twigs, but this doesn't constrain action. The next todo item could right now be on the furthest twig. Instead, arrage things as intuitively as you can.<br><br>The benefit of this tab is it can be referenced when building and updating Todo lists, or to get a fast but comprehensive overview of the set of current concerns.`
       }
     }
   };
