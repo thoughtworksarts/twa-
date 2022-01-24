@@ -19,7 +19,7 @@ function getFeatureSheetConfigs() {
   return [
     this.getProjectsSheet(),
     this.getTimelineSheet(),
-    this.getTodoAndySheet(),
+    this.getCurrentAndySheet(),
     this.getReservoirSheet()
   ];
 }
@@ -53,7 +53,7 @@ function getTimelineSheet() {
   };
 }
 
-function getTodoAndySheet() {
+function getCurrentAndySheet() {
   const sections = [
     'titles',
     'titlesAboveBelow',
@@ -65,7 +65,7 @@ function getTodoAndySheet() {
     'underDone'
   ];
   return {
-    name: 'Todo-Andy',
+    name: 'Current:Andy',
     id: '630855359',
     hiddenValueRow: 3,
     features: {
@@ -73,7 +73,7 @@ function getTodoAndySheet() {
         priority: 'HIGH_PRIORITY',
         workDateLabel: 'Work date',
         widgetCategories: {
-          todo: {
+          current: {
             name: { column: 'C', rowOffset: -1 },
             columns: {
               noun: 'B',
@@ -86,7 +86,7 @@ function getTodoAndySheet() {
             allowFillInTheBlanksDates: true
           }
         },
-        scriptResponsiveWidgetNames: ['Todo']
+        scriptResponsiveWidgetNames: ['Current:Andy']
       },
       collapseDoneSection: {
         numRowsToDisplay: 5
@@ -97,7 +97,7 @@ function getTodoAndySheet() {
       guidance: {
         type: 'text',
         title: 'Usage Guidance',
-        text: 'This is guidance on Todo sheet. It may be several lines of text, or even rich html? Nunc vulputate mauris imperdiet vehicula faucibus. Curabitur facilisis turpis libero, id volutpat velit aliquet a. Curabitur at euismod mi.'
+        text: 'This is guidance on Current sheet. It may be several lines of text, or even rich html? Nunc vulputate mauris imperdiet vehicula faucibus. Curabitur facilisis turpis libero, id volutpat velit aliquet a. Curabitur at euismod mi.'
       },
       arrange: {
         type: 'buttons',
