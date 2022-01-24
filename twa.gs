@@ -1,35 +1,31 @@
-var config = {
-  gsheet: {
+function getSpreadsheetConfig() {
+  return {
     name: 'twa—',
     id: '1jvrit8ybRObHLCh3hNBdQnANssKyLy6UR0SFTTCIusY'
-  },
-  toggles: {
-    performDataUpdates: true,
-    verboseLogging: false,
-    showLogAlert: false
-  }
+  };
 }
 
-function buildSheets() {
-  buildValuesSheet();
-  buildProjectsSheet();
-  buildTimelineSheet();
-  buildTodoAndySheet();
-  buildReservoirSheet();
-}
-
-function buildValuesSheet() {
-  registerValuesSheet({
+function getValuesSheetConfig() {
+  return {
     name: '(workings)',
     range: 'G3:H5',
     usersColumnIndex: 0,
     eventsCalendarIdRowIndex: 0,
     eventsCalendarIdColumnIndex: 1
-  });
+  };
 }
 
-function buildProjectsSheet() {
-  const config = {
+function getFeatureSheetConfigs() {
+  return [
+    this.getProjectsSheet(),
+    this.getTimelineSheet(),
+    this.getTodoAndySheet(),
+    this.getReservoirSheet()
+  ];
+}
+
+function getProjectsSheet() {
+  return {
     name: 'Projects',
     features: {
       replicateSheetInExternalSpreadsheet: {
@@ -39,11 +35,10 @@ function buildProjectsSheet() {
       }
     }
   };
-  registerFeatureSheet(config);
 }
 
-function buildTimelineSheet() {
-  const config = {
+function getTimelineSheet() {
+  return {
     name: 'Timeline',
     features: {
       updateSpreadsheetFromCalendar: {
@@ -56,10 +51,9 @@ function buildTimelineSheet() {
       }
     }
   };
-  registerFeatureSheet(config);
 }
 
-function buildTodoAndySheet() {
+function getTodoAndySheet() {
   const sections = [
     'titles',
     'titlesAboveBelow',
@@ -70,16 +64,17 @@ function buildTodoAndySheet() {
     'underMain',
     'underDone'
   ];
-  const config = {
+  return {
     name: 'Todo-Andy',
     id: '630855359',
     hiddenValueRow: 3,
     features: {
       updateCalendarFromSpreadsheet: {
         priority: 'HIGH_PRIORITY',
+        workDateLabel: 'Work date',
         widgetCategories: {
           todo: {
-            name: { column: 'C', rowOffset: -2 },
+            name: { column: 'C', rowOffset: -1 },
             columns: {
               noun: 'B',
               verb: 'C',
@@ -91,12 +86,12 @@ function buildTodoAndySheet() {
             allowFillInTheBlanksDates: true
           }
         },
-        scriptResponsiveWidgetNames: ['Todo:Andy']
+        scriptResponsiveWidgetNames: ['Todo']
       },
       collapseDoneSection: {
         numRowsToDisplay: 5
       },
-      resetSpreadsheetStyles: getDefaultSheetStyles(sections)
+      resetSpreadsheetStyles: this.getDefaultSheetStyles(sections)
     },
     sidebar: {
       guidance: {
@@ -138,10 +133,9 @@ function buildTodoAndySheet() {
       }
     }
   };
-  registerFeatureSheet(config);
 }
 
-function buildReservoirSheet() {
+function getReservoirSheet() {
   const sections = [
     'titles',
     'titlesAboveBelow',
@@ -168,11 +162,11 @@ function buildReservoirSheet() {
       }
     ]
   };
-  const config = {
+  return {
     name: 'Reservoir',
     id: '531646230',
     features: {
-      resetSpreadsheetStyles: getDefaultSheetStyles(sections, overrides, appends)
+      resetSpreadsheetStyles: this.getDefaultSheetStyles(sections, overrides, appends)
     },
     sidebar: {
       guidance: {
@@ -182,10 +176,9 @@ function buildReservoirSheet() {
       }
     }
   };
-  registerFeatureSheet(config);
 }
 
-function isValidCustomSheetEventData(row, columns) {
+function isValidEventData(row, columns) {
   var timing = row[columns.zeroBasedIndices.timing];
   return timing == '(1) Now' || timing == '(2) Next';
 }
@@ -224,8 +217,8 @@ function getDefaultSheetStyles(sections, overrides={}, appends={}) {
       border: { top: true, left: false, bottom: null, right: false, vertical: false, horizontal: false, color: '#333333', style: 'SOLID_THICK' }
     }
   };
-  sheetStyle = overrideSheetStyles(sheetStyle, overrides);
-  sheetStyle = appendSheetStyles(sheetStyle, appends);
+  sheetStyle = this.overrideSheetStyles(sheetStyle, overrides);
+  sheetStyle = this.appendSheetStyles(sheetStyle, appends);
   return sheetStyle;
 }
 
