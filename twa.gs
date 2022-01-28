@@ -19,8 +19,10 @@ function getFeatureSheetConfigs() {
   return [
     this.getProjectsSheet(),
     this.getTimelineSheet(),
+    this.getHandsSheet(),
     this.getCurrentAndySheet(),
-    this.getReservoirSheet()
+    this.getCurrentPaigeSheet(),
+    this.getMapSheet()
   ];
 }
 
@@ -62,8 +64,10 @@ function getCurrentAndySheet() {
     'main',
     'done',
     'underMain',
-    'underDone'
+    'underDone',
+    'outsides'
   ];
+  const styles = this.getStyles(sections);
   return {
     name: 'Current:Andy',
     id: '630855359',
@@ -88,10 +92,10 @@ function getCurrentAndySheet() {
         },
         scriptResponsiveWidgetNames: ['Current:Andy']
       },
+      resetSpreadsheetStyles: styles,
       collapseDoneSection: {
-        numRowsToDisplay: 5
-      },
-      resetSpreadsheetStyles: this.getDefaultSheetStyles(sections)
+        numRowsToDisplay: 3
+      }
     },
     sidebar: {
       guidance: {
@@ -125,9 +129,6 @@ function getCurrentAndySheet() {
             priority: 'HIGH_PRIORITY',
             matchColumn: 'D',
             matchText: ') DONE'
-          },
-          collapseDoneSection: {
-            numRowsToDisplay: 5
           }
         }
       }
@@ -135,38 +136,146 @@ function getCurrentAndySheet() {
   };
 }
 
-function getReservoirSheet() {
+function getHandsSheet() {
   const sections = [
     'titles',
     'titlesAboveBelow',
     'headers',
     'main',
-    'mainSubRanges',
-    'underMain'
+    'done',
+    'underMain',
+    'underDone',
+    'outsides'
   ];
-  const overrides = {
-    contents: {
-      rowHeight: 95,
-      fontSize: propertyOverrides.IGNORE
+  const styles = this.getStyles(sections);
+  styles.contents[0].rowHeight = 44;
+  styles.headers[0].fontSize = 10;
+
+  return {
+    name: 'Hands',
+    id: '972426638',
+    features: {
+      resetSpreadsheetStyles: styles,
+      collapseDoneSection: {
+        numRowsToDisplay: 3
+      }
+    },
+    sidebar: {
+      guidance: {
+        type: 'text',
+        title: 'Hands',
+        text: 'This sheet tracks when people volunteer, or "raise their hands." People are added the moment they make an enquiry, and they progress through the statuses whether they end up on a project or not.<br><br>If the same person volunteers for a second project, they are enetered again on the sheet. Usually people do one project at a time but it is possible in theory at least they could end up on the active section of this sheet twice.<br><br>The data is entered manually from Jigsaw, which takes about 1 minute per person - but the payback is people don\'t easily "fall through the cracks."'
+      },
+      arrange: {
+        type: 'buttons',
+        title: 'Arrange by',
+        options: ['Status', 'Project', 'Office', 'Country'],
+        features: {
+          orderMainSection: {
+            by: {
+              status:  [{ column: 'I', direction: 'ascending' }, { column: 'M', direction: 'ascending' }, { column: 'N', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'F', direction: 'ascending' }],
+              project: [{ column: 'M', direction: 'ascending' }, { column: 'I', direction: 'ascending' }, { column: 'N', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'F', direction: 'ascending' }],
+              office:  [{ column: 'E', direction: 'ascending' }, { column: 'F', direction: 'ascending' }, { column: 'I', direction: 'ascending' }, { column: 'M', direction: 'ascending' }, { column: 'N', direction: 'ascending' }],
+              country: [{ column: 'F', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'I', direction: 'ascending' }, { column: 'M', direction: 'ascending' }, { column: 'N', direction: 'ascending' }]
+            }
+          }
+        }
+      },
+      archive: {
+        type: 'buttons',
+        title: 'Tidy',
+        options: ['Archive Done Items'],
+        features: {
+          moveMatchingRowsFromMainToDone: {
+            matchColumn: 'I',
+            matchText: [') Opportunity Completed', ') No Opportunity Found', ') No Reply', ') No Longer Available']
+          }
+        }
+      }
     }
   };
-  const appends = {
-    contentsSubRanges: [{
-        beginColumnOffset: 0,
-        numColumns: 1,
-        fontSize: 12
-      }, {
-        beginColumnOffset: 1,
-        numColumns: 3,
-        fontSize: 9
+}
+
+function getCurrentPaigeSheet() {
+  const sections = [
+    'titles',
+    'titlesAboveBelow',
+    'headers',
+    'main',
+    'done',
+    'underMain',
+    'underDone',
+    'outsides'
+  ];
+  const styles = this.getStyles(sections);
+  return {
+    name: 'Current:Paige',
+    id: '1960053305',
+    features: {
+      resetSpreadsheetStyles: styles,
+      collapseDoneSection: {
+        numRowsToDisplay: 3
       }
-    ]
+    },
+    sidebar: {
+      guidance: {
+        type: 'text',
+        title: 'Usage Guidance',
+        text: 'This is guidance on Current sheet. It may be several lines of text, or even rich html? Nunc vulputate mauris imperdiet vehicula faucibus. Curabitur facilisis turpis libero, id volutpat velit aliquet a. Curabitur at euismod mi.'
+      },
+      arrange: {
+        type: 'buttons',
+        title: 'Arrange by',
+        options: ['Status'],
+        features: {
+          orderMainSection: {
+            by: {
+              status: [{ column: 'C', direction: 'ascending' }, { column: 'B', direction: 'ascending' }]
+            }
+          }
+        }
+      },
+      archive: {
+        type: 'buttons',
+        title: 'Tidy',
+        options: ['Archive Done Items'],
+        features: {
+          moveMatchingRowsFromMainToDone: {
+            matchColumn: 'C',
+            matchText: ') DONE'
+          }
+        }
+      }
+    }
   };
+}
+
+function getMapSheet() {
+  const sections = [
+    'titles',
+    'titlesAboveBelow',
+    'headers',
+    'main',
+    'underMain',
+    'outsides'
+  ];
+  let styles = this.getStyles(sections);
+  styles.contents[0].rowHeight = 95;
+  styles.contents[0].fontSize = propertyOverrides.IGNORE;
+  styles.contents.push({
+      beginColumnOffset: 0,
+      numColumns: 1,
+      fontSize: 12
+    }, {
+      beginColumnOffset: 1,
+      numColumns: 3,
+      fontSize: 9
+    });
   return {
     name: 'Map',
     id: '531646230',
     features: {
-      resetSpreadsheetStyles: this.getDefaultSheetStyles(sections, overrides, appends)
+      resetSpreadsheetStyles: styles
     },
     sidebar: {
       guidance: {
@@ -183,57 +292,69 @@ function isValidEventData(row, columns) {
   return timing == '(1) Now' || timing == '(2) Next';
 }
 
-function getDefaultSheetStyles(sections, overrides={}, appends={}) {
-  let sheetStyle = {
+function getStyles(sections) {
+  let styles = {
     sections: sections,
-    titles: {
+    titles: [{
+      beginColumnOffset: 0,
+      numColumns: 1,
       fontFamily: 'Roboto Mono',
       fontSize: 24,
-      rowHeight: 55
-    },
-    titlesAboveBelow: {
-      rowHeight: 9,
-      fontFamily: 'Roboto Mono',
-      fontSize: 1
-    },
-    hiddenValues: {
+      fontColor: '#0c0c0c',
+      background: '#f3f3f3',
+      rowHeight: 55,
+      border: { top: false, left: false, bottom: false, right: false, vertical: false, horizontal: false }
+    }, {
+      beginColumnOffset: 1,
       fontFamily: 'Roboto Mono',
       fontSize: 1,
-    },
-    headers: {
+      fontColor: '#f3f3f3',
+      background: '#f3f3f3',
+      border: { top: false, left: false, bottom: false, right: false, vertical: false, horizontal: false }
+    }],
+    titlesAboveBelow: [{
       fontFamily: 'Roboto Mono',
-      fontSize: 12,
-      border: { top: true, left: false, bottom: true, right: false, vertical: false, horizontal: false, color: '#333333', style: 'SOLID_THICK' },
-      rowHeight: 50
-    },
-    contents: {
+      fontSize: 1,
+      fontColor: '#f3f3f3',
+      background: '#f3f3f3',
+      rowHeight: 9
+    }],
+    hiddenValues: [{
+      fontFamily: 'Roboto Mono',
+      fontSize: 1,
+      fontColor: '#f3f3f3',
+      background: '#f3f3f3'
+    }],
+    headers: [{
+      fontFamily: 'Roboto Mono',
+      fontSize: 13,
+      fontColor: '#ffffff',
+      background: '#999999',
+      rowHeight: 56,
+      border: { top: true, left: false, bottom: true, right: false, vertical: false, horizontal: false, color: '#333333', style: 'SOLID_THICK' }
+    }],
+    contents: [{
       fontFamily: 'Roboto Mono',
       fontSize: 9,
       fontColor: null,
-      border: { top: null, left: false, bottom: null, right: false, vertical: false, horizontal: true, color: '#999999', style: 'SOLID' },
-      rowHeight: 40
-    },
-    underContents: {
+      background: null,
+      rowHeight: 48,
+      border: { top: null, left: false, bottom: null, right: false, vertical: false, horizontal: true, color: '#999999', style: 'SOLID' }
+    }],
+    underContents: [{
+      fontFamily: 'Roboto Mono',
+      fontSize: 1,
+      fontColor: '#f3f3f3',
+      background: '#f3f3f3',
       border: { top: true, left: false, bottom: null, right: false, vertical: false, horizontal: false, color: '#333333', style: 'SOLID_THICK' }
-    }
+    }],
+    outsides: [{
+      fontFamily: 'Roboto Mono',
+      fontSize: 1,
+      fontColor: '#f3f3f3',
+      background: '#f3f3f3',
+      border: { top: false, left: false, bottom: false, right: false, vertical: false, horizontal: false }
+    }]
   };
-  sheetStyle = this.overrideSheetStyles(sheetStyle, overrides);
-  sheetStyle = this.appendSheetStyles(sheetStyle, appends);
-  return sheetStyle;
-}
-
-function overrideSheetStyles(sheetStyle, overrides) {
-  for(const sectionKey in overrides) {
-    const section = overrides[sectionKey];
-    for(const propertyKey in section) {
-      const property = section[propertyKey];
-      sheetStyle[sectionKey][propertyKey] = property;
-    }
-  }
-  return sheetStyle;
-}
-
-function appendSheetStyles(sheetStyle, appends) {
-  sheetStyle = Object.assign(sheetStyle, appends);
-  return sheetStyle;
+  return styles;
 }
