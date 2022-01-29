@@ -45,7 +45,9 @@ function getTimelineSheet() {
   const sections = [
     'titles',
     'headers',
-    'generic'
+    'generic',
+    'rowsOutside',
+    'columnsOutside'
   ];
   const styles = this.getTimelineStyles(sections);
   return {
@@ -86,7 +88,8 @@ function getCurrentAndySheet() {
     'done',
     'underMain',
     'underDone',
-    'outsides'
+    'rowsOutside',
+    'columnsOutside'
   ];
   const styles = this.getStyles(sections);
   return {
@@ -166,7 +169,8 @@ function getHandsSheet() {
     'done',
     'underMain',
     'underDone',
-    'outsides'
+    'rowsOutside',
+    'columnsOutside'
   ];
   const styles = this.getStyles(sections);
   styles.contents[0].rowHeight = 44;
@@ -225,7 +229,8 @@ function getCurrentPaigeSheet() {
     'done',
     'underMain',
     'underDone',
-    'outsides'
+    'rowsOutside',
+    'columnsOutside'
   ];
   const styles = this.getStyles(sections);
   return {
@@ -277,7 +282,8 @@ function getMapSheet() {
     'headers',
     'main',
     'underMain',
-    'outsides'
+    'rowsOutside',
+    'columnsOutside'
   ];
   let styles = this.getTwoColumnStyles(sections);
   styles.contents[0].rowHeight = 95;
@@ -304,7 +310,8 @@ function getDocsSheet() {
     'headers',
     'main',
     'underMain',
-    'outsides'
+    'rowsOutside',
+    'columnsOutside'
   ];
   let styles = this.getTwoColumnStyles(sections);
   styles.contents[0].rowHeight = 120;
@@ -330,7 +337,8 @@ function getAimsSheet() {
     'headers',
     'main',
     'underMain',
-    'outsides'
+    'rowsOutside',
+    'columnsOutside'
   ];
   let styles = this.getTwoColumnStyles(sections);
   styles.contents[0].rowHeight = 160;
@@ -436,7 +444,10 @@ function getTimelineStyles(sections) {
       fontSize: 8,
       fontColor: null,
       background: null,
-      border: { top: null, left: null, bottom: null, right: true, vertical: false, horizontal: false, color: '#b7b7b7', style: 'SOLID_MEDIUM' }
+      borders: [
+        { top: null, left: null, bottom: null, right: null, vertical: false, horizontal: true, color: '#ffffff', style: 'SOLID' },
+        { top: null, left: null, bottom: null, right: true, vertical: false, horizontal: null, color: '#b7b7b7', style: 'SOLID_MEDIUM' }
+      ]
     }, {
       beginColumnOffset: 3,
       fontFamily: 'Roboto Mono',
@@ -445,11 +456,26 @@ function getTimelineStyles(sections) {
       background: null,
       borders: [
         { top: null, left: null, bottom: null, right: null, vertical: false, horizontal: true, color: '#ffffff', style: 'SOLID' },
-        { top: true, left: null, bottom: true, right: true, vertical: null, horizontal: null, color: '#666666', style: 'SOLID_MEDIUM' }]
+        { top: true, left: null, bottom: true, right: true, vertical: null, horizontal: null, color: '#666666', style: 'SOLID_MEDIUM' }
+      ]
     }, {
       beginColumnOffset: 0,
       numColumns: 3,
       border: { top: true, left: true, bottom: true, right: null, vertical: null, horizontal: null, color: '#666666', style: 'SOLID_MEDIUM' }
+    }],
+    rowsOutside: [{
+      fontFamily: 'Roboto Mono',
+      fontSize: 1,
+      fontColor: '#f3f3f3',
+      background: '#f3f3f3',
+      rowHeight: 9
+    }],
+    columnsOutside: [{
+      fontFamily: 'Roboto Mono',
+      fontSize: 1,
+      fontColor: '#f3f3f3',
+      background: '#f3f3f3',
+      columnWidth: 12
     }]
   };
   return styles;
@@ -512,11 +538,20 @@ function getStyles(sections) {
       rowHeight: 9,
       border: { top: true, left: false, bottom: null, right: false, vertical: false, horizontal: false, color: '#333333', style: 'SOLID_THICK' }
     }],
-    outsides: [{
+    rowsOutside: [{
       fontFamily: 'Roboto Mono',
       fontSize: 1,
       fontColor: '#f3f3f3',
       background: '#f3f3f3',
+      rowHeight: 9,
+      border: { top: false, left: false, bottom: false, right: false, vertical: false, horizontal: false }
+    }],
+    columnsOutside: [{
+      fontFamily: 'Roboto Mono',
+      fontSize: 1,
+      fontColor: '#f3f3f3',
+      background: '#f3f3f3',
+      columnWidth: 12,
       border: { top: false, left: false, bottom: false, right: false, vertical: false, horizontal: false }
     }]
   };
