@@ -58,12 +58,12 @@ function getTimelineSheet() {
       grey: {
         type: 'text',
         title: 'Grey Lane',
-        text: 'Events in the Thoughtworks Arts google calendar are reflected in the grey lane on the left, and should show up within a few seconds of additions or edits in the calendar.<br><br>If events you are not interested in pollute the view, type them into the filter box and they will soon disappear.'
+        text: 'Events in the Thoughtworks Arts google calendar are reflected in the grey lane on the left. They should show up there within a few seconds of additions or edits in the calendar.<br><br>If you want an event created by a different calendar to show up here, invite the <a href="mailto:jahya.net_55gagu1o5dmvtkvfrhc9k39tls@group.calendar.google.com">Thoughtworks Arts calendar email</a> to the event.<br><br>If events you are not interested in pollute the view, type them into the filter box and they will soon disappear.'
       },
       color: {
         type: 'text',
         title: 'Colored Lanes',
-        text: 'The colored lanes across the rest of the sheet are free-type, just edit the cell contents and use it for alignment and planning.<br><br>Use these options to mark in different ways:<table><tr><td><pre>&nbsp;words?</pre></td><td>dates not yet confirmed</td></tr><tr><td><pre>[words]&nbsp;&nbsp;</pre></td><td>behind-the-scenes, less time-sensitive, or internal/operational</td></tr><tr><td><pre>&nbsp;words*</pre></td><td>holidays, admin or overriding concerns</td></tr></table>'
+        text: 'The colored lanes across the rest of the sheet are free-type. Edit the cell contents to color them and use for planning.<br><br>These options mark cells with different colors:<table><tr><td><pre>&nbsp;words?</pre></td><td>dates not yet confirmed</td></tr><tr><td><pre>[words]&nbsp;&nbsp;</pre></td><td>behind-the-scenes, less time-sensitive, or internal/operational</td></tr><tr><td><pre>&nbsp;words*</pre></td><td>holidays, admin or overriding concerns</td></tr></table>'
       }
     }
   };
