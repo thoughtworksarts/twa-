@@ -42,6 +42,12 @@ function getProjectsSheet() {
 }
 
 function getTimelineSheet() {
+  const sections = [
+    'titles',
+    'headers',
+    'generic'
+  ];
+  const styles = this.getTimelineStyles(sections);
   return {
     name: 'Timeline',
     features: {
@@ -52,7 +58,8 @@ function getTimelineSheet() {
         eventColumn: 'D',
         filterRow: 2,
         beginRow: 4
-      }
+      },
+      resetSpreadsheetStyles: styles,
     },
     sidebar: {
       grey: {
@@ -345,6 +352,107 @@ function getAimsSheet() {
 function isValidEventData(row, columns) {
   var timing = row[columns.zeroBasedIndices.timing];
   return timing == '(1) Now' || timing == '(2) Next';
+}
+
+function getTimelineStyles(sections) {
+  let styles = {
+    sections: sections,
+    titles: [{
+      beginColumnOffset: 0,
+      numColumns: 1,
+      fontFamily: 'Roboto Mono',
+      fontSize: 24,
+      fontColor: '#0c0c0c',
+      background: '#f3f3f3',
+      rowHeight: 55,
+      border: { top: false, left: false, bottom: false, right: false, vertical: false, horizontal: false }
+    }, {
+      beginColumnOffset: 1,
+      numColumns: 1,
+      fontFamily: 'Roboto Mono',
+      fontSize: 1,
+      fontColor: '#f3f3f3',
+      background: '#f3f3f3',
+      border: { top: false, left: false, bottom: false, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
+    }, {
+      beginColumnOffset: 2,
+      numColumns: 1,
+      fontFamily: 'Roboto Mono',
+      fontSize: 7,
+      fontColor: '#999999',
+      background: '#f3f3f3',
+      border: { top: true, left: true, bottom: true, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
+    }, {
+      beginColumnOffset: 3,
+      fontFamily: 'Roboto Mono',
+      fontSize: 10,
+      fontColor: null,
+      background: null,
+      border: { top: true, left: true, bottom: true, right: true, vertical: true, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
+    }],
+    headers: [{
+      beginColumnOffset: 0,
+      numColumns: 2,
+      fontFamily: 'Roboto Mono',
+      fontSize: 1,
+      fontColor: '#f3f3f3',
+      background: '#f3f3f3',
+      rowHeight: 20,
+      border: { top: false, left: false, bottom: true, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
+    }, {
+      beginColumnOffset: 2,
+      numColumns: 1,
+      fontFamily: 'Roboto Mono',
+      fontSize: 1,
+      fontColor: '#f3f3f3',
+      background: '#f3f3f3'
+    }, {
+      beginColumnOffset: 3,
+      fontFamily: 'Roboto Mono',
+      fontSize: 8,
+      fontColor: null,
+      background: null
+    }],
+    contents: [{
+      beginColumnOffset: 0,
+      numColumns: 1,
+      fontFamily: 'Roboto Mono',
+      fontSize: 14,
+      fontColor: null,
+      background: null,
+      border: { top: null, left: null, bottom: null, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
+    }, {
+      beginColumnOffset: 1,
+      numColumns: 1,
+      fontFamily: 'Roboto Mono',
+      fontSize: 9,
+      fontColor: null,
+      background: null,
+      border: { top: null, left: null, bottom: null, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
+    }, {
+      beginColumnOffset: 2,
+      numColumns: 1,
+      fontFamily: 'Roboto Mono',
+      fontSize: 8,
+      fontColor: null,
+      background: null,
+      border: { top: null, left: null, bottom: null, right: true, vertical: false, horizontal: false, color: '#b7b7b7', style: 'SOLID_MEDIUM' }
+    }, {
+      beginColumnOffset: 3,
+      fontFamily: 'Roboto Mono',
+      fontSize: 7,
+      fontColor: null,
+      background: null,
+      borders: [
+        { top: null, left: null, bottom: null, right: null, vertical: false, horizontal: true, color: '#ffffff', style: 'SOLID' },
+        { top: true, left: null, bottom: true, right: true, vertical: null, horizontal: null, color: '#666666', style: 'SOLID_MEDIUM' }]
+    }, {
+      beginColumnOffset: 0,
+      numColumns: 3,
+      border: { top: true, left: true, bottom: true, right: null, vertical: null, horizontal: null, color: '#666666', style: 'SOLID_MEDIUM' }
+    }]
+  };
+  return styles;
 }
 
 function getStyles(sections) {
