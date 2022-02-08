@@ -32,7 +32,8 @@ function getProjectsSheet() {
   return {
     name: 'Projects',
     features: {
-      replicateSheetInExternalSpreadsheet: {
+      copySheetToExternalSpreadsheet: {
+        events: [Event.onSpreadsheetEdit],
         destinationSpreadsheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
         destinationSheetName: 'Current Projects',
         nonRichTextColumnOverwrite: { column: 'H', startRow: 5 }
@@ -42,18 +43,20 @@ function getProjectsSheet() {
 }
 
 function getTimelineSheet() {
-  const sections = [
+  const styles = this.getTimelineStyles([
     'titles',
     'headers',
     'generic',
     'rowsOutside',
-    'columnsOutside'
-  ];
-  const styles = this.getTimelineStyles(sections);
+    'columnsOutside',
+    'matchers'
+  ]);
   return {
     name: 'Timeline',
     features: {
-      updateSpreadsheetFromCalendar: {
+      copyCalendarEventsToSheet: {
+        events: [Event.onCalendarEdit, Event.onSpreadsheetEdit],
+        triggerColumns: ['D'],
         fromDate: 'March 29, 2021',
         eventsToNumYearsFromNow: 3,
         dateColumn: 'C',
@@ -61,25 +64,82 @@ function getTimelineSheet() {
         filterRow: 2,
         beginRow: 4
       },
-      resetSpreadsheetStyles: styles,
+      setSheetStylesBySection: {
+        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        styles: styles
+      },
+      setSheetHiddenRowsBySection: {
+        events: [Event.onOvernightTimer],
+        section: SectionMarker.generic,
+        startRowOffset: -1,
+        visibleIfMatch: {
+          column: 'D',
+          text: state.today.getFullYear()
+        }
+      },
+      copySheetValuesBySection: {
+        events: [Event.onOvernightTimer],
+        beginColumnOffset: 3,
+        from: {
+          section: SectionMarker.headers,
+          copyIfMatch: {
+            column: 'D',
+            text: state.today.getFullYear()
+          }
+        },
+        to: {
+          section: SectionMarker.title
+        }
+      }
     },
     sidebar: {
-      grey: {
+      guidance: {
         type: 'text',
-        title: 'Grey Lane',
-        text: 'Events in the Thoughtworks Arts google calendar are reflected in the grey lane on the left. They should show up there within a few seconds of additions or edits in the calendar.<br><br>If you want an event created by a different calendar to show up here, invite the <a href="mailto:jahya.net_55gagu1o5dmvtkvfrhc9k39tls@group.calendar.google.com">Thoughtworks Arts calendar email</a> to the event.<br><br>If events you are not interested in pollute the view, type them into the filter box and they will soon disappear.'
+        title: 'Timeline',
+        text: 'Free type in the colored lanes, and cross reference with Google Calendar events (in the grey lane on the left).'
+      },
+      years: {
+        type: 'buttons',
+        title: 'Year to display',
+        options: ['2021', '2022', '2023', '2024'],
+        features: {
+          setSheetHiddenRowsBySection: {
+            events: [Event.onSidebarSubmit],
+            priority: 'HIGH_PRIORITY',
+            section: SectionMarker.generic,
+            startRowOffset: -1,
+            visibleIfMatch: {
+              column: 'D',
+              text: PropertyCommand.EVENT_DATA
+            }
+          },
+          copySheetValuesBySection: {
+            events: [Event.onSidebarSubmit],
+            beginColumnOffset: 3,
+            from: {
+              section: SectionMarker.headers,
+              copyIfMatch: {
+                column: 'D',
+                text: PropertyCommand.EVENT_DATA
+              }
+            },
+            to: {
+              section: SectionMarker.title
+            }
+          }
+        }
       },
       color: {
         type: 'text',
-        title: 'Colored Lanes',
-        text: 'The colored lanes across the rest of the sheet are free-type. Edit the cell contents to color them and use for planning.<br><br>These options mark cells with different colors:<table><tr><td><pre>&nbsp;words?</pre></td><td>dates not yet confirmed</td></tr><tr><td><pre>[words]&nbsp;&nbsp;</pre></td><td>behind-the-scenes, less time-sensitive, or internal/operational</td></tr><tr><td><pre>&nbsp;words*</pre></td><td>holidays, admin or overriding concerns</td></tr></table>'
+        title: 'Help',
+        text: '1. Use these event typing conventions:<table><tr><td><pre>&nbsp;&nbsp;words?</pre></td><td>dates not yet confirmed</td></tr><tr><td><pre>&nbsp;[words]&nbsp;&nbsp;</pre></td><td>behind-the-scenes, less time-sensitive, or internal/operational</td></tr><tr><td><pre>&nbsp;&nbsp;words*</pre></td><td>holidays, admin or overriding concerns</td></tr></table><br>2. Don\'t edit the grey lane, it is overwritten by Google Calendar events. Either create an event in Google Calendar or invite <a href="mailto:jahya.net_55gagu1o5dmvtkvfrhc9k39tls@group.calendar.google.com">this email address</a> to a Google Calendar event.<br><br>3. Type into the filter box above to hide items from the grey lane below.'
       }
     }
   };
 }
 
 function getCurrentAndySheet() {
-  const sections = [
+  const styles = this.getStyles([
     'titles',
     'titlesAboveBelow',
     'hiddenValues',
@@ -90,14 +150,14 @@ function getCurrentAndySheet() {
     'underDone',
     'rowsOutside',
     'columnsOutside'
-  ];
-  const styles = this.getStyles(sections);
+  ]);
   return {
     name: 'Current:Andy',
     id: '630855359',
     hiddenValueRow: 3,
     features: {
-      updateCalendarFromSpreadsheet: {
+      copySheetEventsToCalendar: {
+        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer],
         priority: 'HIGH_PRIORITY',
         workDateLabel: 'Work date',
         widgetCategories: {
@@ -116,8 +176,13 @@ function getCurrentAndySheet() {
         },
         scriptResponsiveWidgetNames: ['Current:Andy']
       },
-      resetSpreadsheetStyles: styles,
-      collapseDoneSection: {
+      setSheetStylesBySection: {
+        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        styles: styles
+      },
+      setSheetGroupsBySection: {
+        events: [Event.onOvernightTimer],
+        section: SectionMarker.done,
         numRowsToDisplay: 3
       }
     },
@@ -132,14 +197,16 @@ function getCurrentAndySheet() {
         title: 'Arrange by',
         options: ['Timing' , 'Work Stream'],
         features: {
-          orderMainSection: {
+          orderSheetMainSection: {
+            events: [Event.onSidebarSubmit],
             priority: 'HIGH_PRIORITY',
             by: {
               timing: [{ column: 'D', direction: 'ascending' }, { column: 'B', direction: 'ascending' }],
               workStream: [{ column: 'B', direction: 'ascending' }, { column: 'D', direction: 'ascending' }]
             }
           },
-          updateSheetHiddenValue: {
+          setSheetHiddenValue: {
+            events: [Event.onSidebarSubmit],
             cellToUpdate: { column: 'D' }
           }
         }
@@ -149,10 +216,13 @@ function getCurrentAndySheet() {
         title: 'Tidy',
         options: ['Archive Done Items'],
         features: {
-          moveMatchingRowsFromMainToDone: {
+          moveSheetRowsMainToDone: {
+            events: [Event.onSidebarSubmit],
             priority: 'HIGH_PRIORITY',
-            matchColumn: 'D',
-            matchText: ') DONE'
+            match: {
+              value: ') DONE',
+              column: 'D'
+            }
           }
         }
       }
@@ -161,7 +231,7 @@ function getCurrentAndySheet() {
 }
 
 function getHandsSheet() {
-  const sections = [
+  const styles = this.getStyles([
     'titles',
     'titlesAboveBelow',
     'headers',
@@ -171,16 +241,20 @@ function getHandsSheet() {
     'underDone',
     'rowsOutside',
     'columnsOutside'
-  ];
-  const styles = this.getStyles(sections);
+  ]);
   styles.contents[0].rowHeight = 44;
   styles.headers[0].fontSize = 10;
   return {
     name: 'Hands',
     id: '972426638',
     features: {
-      resetSpreadsheetStyles: styles,
-      collapseDoneSection: {
+      setSheetStylesBySection: {
+        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        styles: styles
+      },
+      setSheetGroupsBySection: {
+        events: [Event.onOvernightTimer],
+        section: SectionMarker.done,
         numRowsToDisplay: 3
       }
     },
@@ -195,7 +269,8 @@ function getHandsSheet() {
         title: 'Arrange by',
         options: ['Status', 'Project', 'Office', 'Country'],
         features: {
-          orderMainSection: {
+          orderSheetMainSection: {
+            events: [Event.onSidebarSubmit],
             by: {
               status:  [{ column: 'I', direction: 'ascending' }, { column: 'M', direction: 'ascending' }, { column: 'N', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'F', direction: 'ascending' }],
               project: [{ column: 'M', direction: 'ascending' }, { column: 'I', direction: 'ascending' }, { column: 'N', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'F', direction: 'ascending' }],
@@ -210,9 +285,12 @@ function getHandsSheet() {
         title: 'Tidy',
         options: ['Archive Done Items'],
         features: {
-          moveMatchingRowsFromMainToDone: {
-            matchColumn: 'I',
-            matchText: [') Opportunity Completed', ') No Opportunity Found', ') No Reply', ') No Longer Available']
+          moveSheetRowsMainToDone: {
+            events: [Event.onSidebarSubmit],
+            match: {
+              value: [') Opportunity Completed', ') No Opportunity Found', ') No Reply', ') No Longer Available'],
+              column: 'I'
+            }
           }
         }
       }
@@ -221,7 +299,7 @@ function getHandsSheet() {
 }
 
 function getCurrentPaigeSheet() {
-  const sections = [
+  const styles = this.getStyles([
     'titles',
     'titlesAboveBelow',
     'headers',
@@ -231,14 +309,18 @@ function getCurrentPaigeSheet() {
     'underDone',
     'rowsOutside',
     'columnsOutside'
-  ];
-  const styles = this.getStyles(sections);
+  ]);
   return {
     name: 'Current:Paige',
     id: '1960053305',
     features: {
-      resetSpreadsheetStyles: styles,
-      collapseDoneSection: {
+      setSheetStylesBySection: {
+        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        styles: styles
+      },
+      setSheetGroupsBySection: {
+        events: [Event.onOvernightTimer],
+        section: SectionMarker.done,
         numRowsToDisplay: 3
       }
     },
@@ -253,7 +335,8 @@ function getCurrentPaigeSheet() {
         title: 'Arrange by',
         options: ['Status'],
         features: {
-          orderMainSection: {
+          orderSheetMainSection: {
+            events: [Event.onSidebarSubmit],
             by: {
               status: [{ column: 'C', direction: 'ascending' }, { column: 'B', direction: 'ascending' }]
             }
@@ -265,9 +348,12 @@ function getCurrentPaigeSheet() {
         title: 'Tidy',
         options: ['Archive Done Items'],
         features: {
-          moveMatchingRowsFromMainToDone: {
-            matchColumn: 'C',
-            matchText: ') DONE'
+          moveSheetRowsMainToDone: {
+            events: [Event.onSidebarSubmit],
+            match: {
+              value: ') DONE',
+              column: 'C'
+            }
           }
         }
       }
@@ -276,7 +362,7 @@ function getCurrentPaigeSheet() {
 }
 
 function getMapSheet() {
-  const sections = [
+  let styles = this.getTwoColumnStyles([
     'titles',
     'titlesAboveBelow',
     'headers',
@@ -284,14 +370,16 @@ function getMapSheet() {
     'underMain',
     'rowsOutside',
     'columnsOutside'
-  ];
-  let styles = this.getTwoColumnStyles(sections);
+  ]);
   styles.contents[0].rowHeight = 95;
   return {
     name: 'Map',
     id: '531646230',
     features: {
-      resetSpreadsheetStyles: styles
+      setSheetStylesBySection: {
+        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        styles: styles
+      }
     },
     sidebar: {
       guidance: {
@@ -304,7 +392,7 @@ function getMapSheet() {
 }
 
 function getDocsSheet() {
-  const sections = [
+  let styles = this.getTwoColumnStyles([
     'titles',
     'titlesAboveBelow',
     'headers',
@@ -312,13 +400,15 @@ function getDocsSheet() {
     'underMain',
     'rowsOutside',
     'columnsOutside'
-  ];
-  let styles = this.getTwoColumnStyles(sections);
+  ]);
   styles.contents[0].rowHeight = 120;
   return {
     name: 'Docs',
     features: {
-      resetSpreadsheetStyles: styles
+      setSheetStylesBySection: {
+        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        styles: styles
+      }
     },
     sidebar: {
       guidance: {
@@ -331,7 +421,7 @@ function getDocsSheet() {
 }
 
 function getAimsSheet() {
-  const sections = [
+  let styles = this.getTwoColumnStyles([
     'titles',
     'titlesAboveBelow',
     'headers',
@@ -339,13 +429,15 @@ function getAimsSheet() {
     'underMain',
     'rowsOutside',
     'columnsOutside'
-  ];
-  let styles = this.getTwoColumnStyles(sections);
+  ]);
   styles.contents[0].rowHeight = 160;
   return {
     name: 'Aims',
     features: {
-      resetSpreadsheetStyles: styles
+      setSheetStylesBySection: {
+        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        styles: styles
+      }
     },
     sidebar: {
       guidance: {
@@ -405,21 +497,23 @@ function getTimelineStyles(sections) {
       fontSize: 1,
       fontColor: '#f3f3f3',
       background: '#f3f3f3',
-      rowHeight: 20,
-      border: { top: false, left: false, bottom: true, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
+      rowHeight: 36,
+      border: { top: true, left: false, bottom: true, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
     }, {
       beginColumnOffset: 2,
       numColumns: 1,
       fontFamily: 'Roboto Mono',
-      fontSize: 1,
-      fontColor: '#f3f3f3',
-      background: '#f3f3f3'
+      fontSize: 10,
+      fontColor: '#666666',
+      background: '#f3f3f3',
+      border: { top: true, left: false, bottom: true, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
     }, {
       beginColumnOffset: 3,
       fontFamily: 'Roboto Mono',
       fontSize: 8,
       fontColor: null,
-      background: null
+      background: null,
+      border: { top: true, left: true, bottom: true, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
     }],
     contents: [{
       beginColumnOffset: 0,
@@ -454,6 +548,7 @@ function getTimelineStyles(sections) {
       fontSize: 7,
       fontColor: null,
       background: null,
+      rowHeight: 41,
       borders: [
         { top: null, left: null, bottom: null, right: null, vertical: false, horizontal: true, color: '#ffffff', style: 'SOLID' },
         { top: true, left: null, bottom: true, right: true, vertical: null, horizontal: null, color: '#666666', style: 'SOLID_MEDIUM' }
@@ -476,6 +571,14 @@ function getTimelineStyles(sections) {
       fontColor: '#f3f3f3',
       background: '#f3f3f3',
       columnWidth: 12
+    }],
+    matchers: [{
+      match: {
+        value: getMondayThisWeek(),
+        column: 'C'
+      },
+      beginColumnOffset: 2,
+      border: { top: true, left: true, bottom: true, right: true, vertical: null, horizontal: null, color: '#ea4335', style: 'SOLID_THICK' }
     }]
   };
   return styles;
@@ -544,7 +647,7 @@ function getStyles(sections) {
       fontColor: '#f3f3f3',
       background: '#f3f3f3',
       rowHeight: 9,
-      border: { top: false, left: false, bottom: false, right: false, vertical: false, horizontal: false }
+      border: { top: null, left: false, bottom: false, right: false, vertical: false, horizontal: false }
     }],
     columnsOutside: [{
       fontFamily: 'Roboto Mono',
@@ -561,7 +664,7 @@ function getStyles(sections) {
 function getTwoColumnStyles(sections) {
   let styles = this.getStyles(sections);
   const defaultFontSize = styles.contents[0].fontSize;
-  styles.contents[0].fontSize = propertyOverrides.IGNORE;
+  styles.contents[0].fontSize = PropertyCommand.IGNORE;
   styles.contents.push({
     beginColumnOffset: 0,
     numColumns: 1,
