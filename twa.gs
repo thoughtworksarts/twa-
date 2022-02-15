@@ -17,23 +17,23 @@ function getValuesSheetConfig() {
 
 function getFeatureSheetConfigs() {
   return [
-    this.getProjectsSheet(),
-    this.getTimelineSheet(),
-    this.getHandsSheet(),
-    this.getCurrentAndySheet(),
-    this.getCurrentPaigeSheet(),
-    this.getMapSheet(),
-    this.getDocsSheet(),
-    this.getAimsSheet()
+    this.getProjectsConfig(),
+    this.getTimelineConfig(),
+    this.getHandsConfig(),
+    this.getCurrentAndyConfig(),
+    this.getCurrentPaigeConfig(),
+    this.getMapConfig(),
+    this.getDocsConfig(),
+    this.getAimsConfig()
   ];
 }
 
-function getProjectsSheet() {
+function getProjectsConfig() {
   return {
     name: 'Projects',
     features: {
       copySheetToExternalSpreadsheet: {
-        events: [Event.onSpreadsheetEdit],
+        events: [Event.onSheetEdit],
         destinationSpreadsheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
         destinationSheetName: 'Current Projects',
         nonRichTextColumnOverwrite: { column: 'H', startRow: 5 }
@@ -42,8 +42,8 @@ function getProjectsSheet() {
   };
 }
 
-function getTimelineSheet() {
-  const styles = this.getTimelineStyles([
+function getTimelineConfig() {
+  const styles = state.style.getTimeline([
     'titles',
     'headers',
     'generic',
@@ -55,7 +55,7 @@ function getTimelineSheet() {
     name: 'Timeline',
     features: {
       copyCalendarEventsToSheet: {
-        events: [Event.onCalendarEdit, Event.onSpreadsheetEdit],
+        events: [Event.onCalendarEdit, Event.onSheetEdit],
         triggerColumns: ['D'],
         fromDate: 'March 29, 2021',
         eventsToNumYearsFromNow: 3,
@@ -65,7 +65,7 @@ function getTimelineSheet() {
         beginRow: 4
       },
       setSheetStylesBySection: {
-        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
         styles: styles
       },
       setSheetHiddenRowsBySection: {
@@ -138,8 +138,8 @@ function getTimelineSheet() {
   };
 }
 
-function getCurrentAndySheet() {
-  const styles = this.getStyles([
+function getCurrentAndyConfig() {
+  const styles = state.style.getDefault([
     'titles',
     'titlesAboveBelow',
     'hiddenValues',
@@ -153,13 +153,20 @@ function getCurrentAndySheet() {
   ]);
   return {
     name: 'Current:Andy',
-    id: '630855359',
-    hiddenValueRow: 3,
     features: {
       copySheetEventsToCalendar: {
-        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer],
+        events: [Event.onSheetEdit, Event.onOvernightTimer],
+        username: 'Andy',
         priority: 'HIGH_PRIORITY',
+        sheetIdForUrl: '630855359',
         workDateLabel: 'Work date',
+        eventValidator: {
+          method: (row, data, columns) => {
+            const timing = row[columns.zeroBasedIndices.timing];
+            return data.valid.filter(v => timing.endsWith(v)).length === 1;
+          },
+          data: { valid: [') Now', ') Next'] }
+        },
         widgetCategories: {
           current: {
             name: { column: 'C', rowOffset: -1 },
@@ -170,14 +177,12 @@ function getCurrentAndySheet() {
               workDate: 'E',
               startTime: 'F',
               durationHours: 'G'
-            },
-            allowFillInTheBlanksDates: true
+            }
           }
-        },
-        scriptResponsiveWidgetNames: ['Current:Andy']
+        }
       },
       setSheetStylesBySection: {
-        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
         styles: styles
       },
       setSheetGroupsBySection: {
@@ -205,9 +210,13 @@ function getCurrentAndySheet() {
               workStream: [{ column: 'B', direction: 'ascending' }, { column: 'D', direction: 'ascending' }]
             }
           },
-          setSheetHiddenValue: {
+          setSheetValue: {
             events: [Event.onSidebarSubmit],
-            cellToUpdate: { column: 'D' }
+            update: {
+              rowMarker: SectionMarker.hiddenValues,
+              column: 'D',
+              value: PropertyCommand.EVENT_DATA
+            }
           }
         }
       },
@@ -230,8 +239,8 @@ function getCurrentAndySheet() {
   };
 }
 
-function getHandsSheet() {
-  const styles = this.getStyles([
+function getHandsConfig() {
+  const styles = state.style.getDefault([
     'titles',
     'titlesAboveBelow',
     'headers',
@@ -246,10 +255,9 @@ function getHandsSheet() {
   styles.headers[0].fontSize = 10;
   return {
     name: 'Hands',
-    id: '972426638',
     features: {
       setSheetStylesBySection: {
-        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
         styles: styles
       },
       setSheetGroupsBySection: {
@@ -298,8 +306,8 @@ function getHandsSheet() {
   };
 }
 
-function getCurrentPaigeSheet() {
-  const styles = this.getStyles([
+function getCurrentPaigeConfig() {
+  const styles = state.style.getDefault([
     'titles',
     'titlesAboveBelow',
     'headers',
@@ -312,10 +320,9 @@ function getCurrentPaigeSheet() {
   ]);
   return {
     name: 'Current:Paige',
-    id: '1960053305',
     features: {
       setSheetStylesBySection: {
-        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
         styles: styles
       },
       setSheetGroupsBySection: {
@@ -361,8 +368,8 @@ function getCurrentPaigeSheet() {
   };
 }
 
-function getMapSheet() {
-  let styles = this.getTwoColumnStyles([
+function getMapConfig() {
+  let styles = state.style.getTwoPanel([
     'titles',
     'titlesAboveBelow',
     'headers',
@@ -374,10 +381,9 @@ function getMapSheet() {
   styles.contents[0].rowHeight = 95;
   return {
     name: 'Map',
-    id: '531646230',
     features: {
       setSheetStylesBySection: {
-        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
         styles: styles
       }
     },
@@ -391,8 +397,8 @@ function getMapSheet() {
   };
 }
 
-function getDocsSheet() {
-  let styles = this.getTwoColumnStyles([
+function getDocsConfig() {
+  let styles = state.style.getTwoPanel([
     'titles',
     'titlesAboveBelow',
     'headers',
@@ -406,7 +412,7 @@ function getDocsSheet() {
     name: 'Docs',
     features: {
       setSheetStylesBySection: {
-        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
         styles: styles
       }
     },
@@ -420,8 +426,8 @@ function getDocsSheet() {
   };
 }
 
-function getAimsSheet() {
-  let styles = this.getTwoColumnStyles([
+function getAimsConfig() {
+  let styles = state.style.getTwoPanel([
     'titles',
     'titlesAboveBelow',
     'headers',
@@ -435,7 +441,7 @@ function getAimsSheet() {
     name: 'Aims',
     features: {
       setSheetStylesBySection: {
-        events: [Event.onSpreadsheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
         styles: styles
       }
     },
@@ -447,231 +453,4 @@ function getAimsSheet() {
       }
     }
   };
-}
-
-function isValidEventData(row, columns) {
-  var timing = row[columns.zeroBasedIndices.timing];
-  return timing == '(1) Now' || timing == '(2) Next';
-}
-
-function getTimelineStyles(sections) {
-  let styles = {
-    sections: sections,
-    titles: [{
-      beginColumnOffset: 0,
-      numColumns: 1,
-      fontFamily: 'Roboto Mono',
-      fontSize: 24,
-      fontColor: '#0c0c0c',
-      background: '#f3f3f3',
-      rowHeight: 55,
-      border: { top: false, left: false, bottom: false, right: false, vertical: false, horizontal: false }
-    }, {
-      beginColumnOffset: 1,
-      numColumns: 1,
-      fontFamily: 'Roboto Mono',
-      fontSize: 1,
-      fontColor: '#f3f3f3',
-      background: '#f3f3f3',
-      border: { top: false, left: false, bottom: false, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
-    }, {
-      beginColumnOffset: 2,
-      numColumns: 1,
-      fontFamily: 'Roboto Mono',
-      fontSize: 7,
-      fontColor: '#999999',
-      background: '#f3f3f3',
-      border: { top: true, left: true, bottom: true, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
-    }, {
-      beginColumnOffset: 3,
-      fontFamily: 'Roboto Mono',
-      fontSize: 10,
-      fontColor: null,
-      background: null,
-      border: { top: true, left: true, bottom: true, right: true, vertical: true, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
-    }],
-    headers: [{
-      beginColumnOffset: 0,
-      numColumns: 2,
-      fontFamily: 'Roboto Mono',
-      fontSize: 1,
-      fontColor: '#f3f3f3',
-      background: '#f3f3f3',
-      rowHeight: 36,
-      border: { top: true, left: false, bottom: true, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
-    }, {
-      beginColumnOffset: 2,
-      numColumns: 1,
-      fontFamily: 'Roboto Mono',
-      fontSize: 10,
-      fontColor: '#666666',
-      background: '#f3f3f3',
-      border: { top: true, left: false, bottom: true, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
-    }, {
-      beginColumnOffset: 3,
-      fontFamily: 'Roboto Mono',
-      fontSize: 8,
-      fontColor: null,
-      background: null,
-      border: { top: true, left: true, bottom: true, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
-    }],
-    contents: [{
-      beginColumnOffset: 0,
-      numColumns: 1,
-      fontFamily: 'Roboto Mono',
-      fontSize: 14,
-      fontColor: null,
-      background: null,
-      border: { top: null, left: null, bottom: null, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
-    }, {
-      beginColumnOffset: 1,
-      numColumns: 1,
-      fontFamily: 'Roboto Mono',
-      fontSize: 9,
-      fontColor: null,
-      background: null,
-      border: { top: null, left: null, bottom: null, right: true, vertical: false, horizontal: false, color: '#666666', style: 'SOLID_MEDIUM' }
-    }, {
-      beginColumnOffset: 2,
-      numColumns: 1,
-      fontFamily: 'Roboto Mono',
-      fontSize: 8,
-      fontColor: null,
-      background: null,
-      borders: [
-        { top: null, left: null, bottom: null, right: null, vertical: false, horizontal: true, color: '#ffffff', style: 'SOLID' },
-        { top: null, left: null, bottom: null, right: true, vertical: false, horizontal: null, color: '#b7b7b7', style: 'SOLID_MEDIUM' }
-      ]
-    }, {
-      beginColumnOffset: 3,
-      fontFamily: 'Roboto Mono',
-      fontSize: 7,
-      fontColor: null,
-      background: null,
-      rowHeight: 41,
-      borders: [
-        { top: null, left: null, bottom: null, right: null, vertical: false, horizontal: true, color: '#ffffff', style: 'SOLID' },
-        { top: true, left: null, bottom: true, right: true, vertical: null, horizontal: null, color: '#666666', style: 'SOLID_MEDIUM' }
-      ]
-    }, {
-      beginColumnOffset: 0,
-      numColumns: 3,
-      border: { top: true, left: true, bottom: true, right: null, vertical: null, horizontal: null, color: '#666666', style: 'SOLID_MEDIUM' }
-    }],
-    rowsOutside: [{
-      fontFamily: 'Roboto Mono',
-      fontSize: 1,
-      fontColor: '#f3f3f3',
-      background: '#f3f3f3',
-      rowHeight: 9
-    }],
-    columnsOutside: [{
-      fontFamily: 'Roboto Mono',
-      fontSize: 1,
-      fontColor: '#f3f3f3',
-      background: '#f3f3f3',
-      columnWidth: 12
-    }],
-    matchers: [{
-      match: {
-        value: getMondayThisWeek(),
-        column: 'C'
-      },
-      beginColumnOffset: 2,
-      border: { top: true, left: true, bottom: true, right: true, vertical: null, horizontal: null, color: '#ea4335', style: 'SOLID_THICK' }
-    }]
-  };
-  return styles;
-}
-
-function getStyles(sections) {
-  let styles = {
-    sections: sections,
-    titles: [{
-      beginColumnOffset: 0,
-      numColumns: 1,
-      fontFamily: 'Roboto Mono',
-      fontSize: 24,
-      fontColor: '#0c0c0c',
-      background: '#f3f3f3',
-      rowHeight: 55,
-      border: { top: false, left: false, bottom: false, right: false, vertical: false, horizontal: false }
-    }, {
-      beginColumnOffset: 1,
-      fontFamily: 'Roboto Mono',
-      fontSize: 1,
-      fontColor: '#f3f3f3',
-      background: '#f3f3f3',
-      border: { top: false, left: false, bottom: false, right: false, vertical: false, horizontal: false }
-    }],
-    titlesAboveBelow: [{
-      fontFamily: 'Roboto Mono',
-      fontSize: 1,
-      fontColor: '#f3f3f3',
-      background: '#f3f3f3',
-      rowHeight: 9
-    }],
-    hiddenValues: [{
-      fontFamily: 'Roboto Mono',
-      fontSize: 1,
-      fontColor: '#f3f3f3',
-      background: '#f3f3f3'
-    }],
-    headers: [{
-      fontFamily: 'Roboto Mono',
-      fontSize: 13,
-      fontColor: '#ffffff',
-      background: '#999999',
-      rowHeight: 56,
-      border: { top: true, left: false, bottom: true, right: false, vertical: false, horizontal: false, color: '#333333', style: 'SOLID_THICK' }
-    }],
-    contents: [{
-      fontFamily: 'Roboto Mono',
-      fontSize: 9,
-      fontColor: null,
-      background: null,
-      rowHeight: 48,
-      border: { top: null, left: false, bottom: null, right: false, vertical: false, horizontal: true, color: '#999999', style: 'SOLID' }
-    }],
-    underContents: [{
-      fontFamily: 'Roboto Mono',
-      fontSize: 1,
-      fontColor: '#f3f3f3',
-      background: '#f3f3f3',
-      rowHeight: 9,
-      border: { top: true, left: false, bottom: null, right: false, vertical: false, horizontal: false, color: '#333333', style: 'SOLID_THICK' }
-    }],
-    rowsOutside: [{
-      fontFamily: 'Roboto Mono',
-      fontSize: 1,
-      fontColor: '#f3f3f3',
-      background: '#f3f3f3',
-      rowHeight: 9,
-      border: { top: null, left: false, bottom: false, right: false, vertical: false, horizontal: false }
-    }],
-    columnsOutside: [{
-      fontFamily: 'Roboto Mono',
-      fontSize: 1,
-      fontColor: '#f3f3f3',
-      background: '#f3f3f3',
-      columnWidth: 12,
-      border: { top: false, left: false, bottom: false, right: false, vertical: false, horizontal: false }
-    }]
-  };
-  return styles;
-}
-
-function getTwoColumnStyles(sections) {
-  let styles = this.getStyles(sections);
-  const defaultFontSize = styles.contents[0].fontSize;
-  styles.contents[0].fontSize = PropertyCommand.IGNORE;
-  styles.contents.push({
-    beginColumnOffset: 0,
-    numColumns: 1,
-    fontSize: 12
-  }, {
-    beginColumnOffset: 1,
-    fontSize: defaultFontSize
-  });
-  return styles;
 }
