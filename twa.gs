@@ -17,40 +17,23 @@ function getValuesSheetConfig() {
 
 function getFeatureSheetConfigs() {
   return [
-    this.getProjectsConfig(),
     this.getTimelineConfig(),
-    this.getHandsConfig(),
+    this.getMapConfig(),
     this.getCurrentAndyConfig(),
     this.getCurrentPaigeConfig(),
-    this.getMapConfig(),
-    this.getDocsConfig(),
-    this.getAimsConfig()
+    this.getTriggersConfig(),
+    this.getPublishingConfig(),
+    this.getProjectsConfig(),
+    this.getHandsConfig(),
+    this.getAimsConfig(),
+    this.getDocsConfig()
   ];
 }
 
-function getProjectsConfig() {
-  return {
-    name: 'Projects',
-    features: {
-      copySheetToExternalSpreadsheet: {
-        events: [Event.onSheetEdit],
-        destinationSpreadsheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
-        destinationSheetName: 'Current Projects',
-        nonRichTextColumnOverwrite: { column: 'H', startRow: 5 }
-      }
-    }
-  };
-}
-
 function getTimelineConfig() {
-  const styles = state.style.getTimeline([
-    'titles',
-    'headers',
-    'generic',
-    'rowsOutside',
-    'columnsOutside',
-    'matchers'
-  ]);
+  const sections = ['titlesAbove', 'titles', 'headers', 'generic', 'rowBottomOutside', 'columnsOutside', 'matchers'];
+  const styles = state.style.getTimeline(sections);
+
   return {
     name: 'Timeline',
     features: {
@@ -133,24 +116,42 @@ function getTimelineConfig() {
         type: 'text',
         title: 'Help',
         text: '1. Use these event typing conventions:<table><tr><td><pre>&nbsp;&nbsp;words?</pre></td><td>dates not yet confirmed</td></tr><tr><td><pre>&nbsp;[words]&nbsp;&nbsp;</pre></td><td>behind-the-scenes, less time-sensitive, or internal/operational</td></tr><tr><td><pre>&nbsp;&nbsp;words*</pre></td><td>holidays, admin or overriding concerns</td></tr></table><br>2. Don\'t edit the grey lane, it is overwritten by Google Calendar events. Either create an event in Google Calendar or invite <a href="mailto:jahya.net_55gagu1o5dmvtkvfrhc9k39tls@group.calendar.google.com">this email address</a> to a Google Calendar event.<br><br>3. Type into the filter box above to hide items from the grey lane below.'
+      },
+      review: getReviewConfig(SectionMarker.aboveTitle, 'D')
+    }
+  };
+}
+
+function getMapConfig() {
+  const sections = ['titles', 'titlesAboveBelow', 'headers', 'main', 'underMain', 'rowsOutside', 'columnsOutside']
+  let styles = state.style.getTwoPanel(sections);
+  styles.contents.left.fontSize = 12;
+  styles.contents.right.fontSize = 9;
+  styles.contents.all.rowHeight = 95;
+
+  return {
+    name: 'Map',
+    features: {
+      setSheetStylesBySection: {
+        events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        styles: styles
       }
+    },
+    sidebar: {
+      guidance: {
+        type: 'text',
+        title: 'Map',
+        text: `The 'Map' tab is based loosely around <a href='https://www.mindmapping.com/mind-map'>Mind Maps</a>, in that is is designed to work in harmony the natural functioning of the human mind and get ideas down in a mental tree-like structure.<br><br>All the text fields are free type, no need to worry about whether your edits correctly reference other areas of the dashboard. Just go ahead and start typing in whatever way matches the way things are in your mind.<br><br>There is a hierarchy inherent to mind-mapping but it shouldn't be overthought - arrange things in an intuitive way. Also, there is an inherent prioritization inherent in the positions of branches and twigs, but this doesn't constrain action. The next todo item could right now be on the furthest twig. Instead, arrage things as intuitively as you can.<br><br>The benefit of this tab is it can be referenced when building and updating Todo lists, or to get a fast but comprehensive overview of the set of current concerns.`
+      },
+      review: getReviewConfig()
     }
   };
 }
 
 function getCurrentAndyConfig() {
-  const styles = state.style.getDefault([
-    'titles',
-    'titlesAboveBelow',
-    'hiddenValues',
-    'headers',
-    'main',
-    'done',
-    'underMain',
-    'underDone',
-    'rowsOutside',
-    'columnsOutside'
-  ]);
+  const sections = ['titles', 'titlesAboveBelow', 'hiddenValues', 'headers', 'main', 'done', 'underMain', 'underDone', 'rowsOutside', 'columnsOutside'];
+  const styles = state.style.getDefault(sections);
+
   return {
     name: 'Current:Andy',
     features: {
@@ -202,7 +203,7 @@ function getCurrentAndyConfig() {
         title: 'Arrange by',
         options: ['Timing' , 'Work Stream'],
         features: {
-          orderSheetMainSection: {
+          orderSheetMainSections: {
             events: [Event.onSidebarSubmit],
             priority: 'HIGH_PRIORITY',
             by: {
@@ -225,8 +226,9 @@ function getCurrentAndyConfig() {
         title: 'Tidy',
         options: ['Archive Done Items'],
         features: {
-          moveSheetRowsMainToDone: {
+          moveSheetRowsToDone: {
             events: [Event.onSidebarSubmit],
+            from: SectionMarker.main,
             priority: 'HIGH_PRIORITY',
             match: {
               value: ') DONE',
@@ -234,90 +236,16 @@ function getCurrentAndyConfig() {
             }
           }
         }
-      }
-    }
-  };
-}
-
-function getHandsConfig() {
-  const styles = state.style.getDefault([
-    'titles',
-    'titlesAboveBelow',
-    'headers',
-    'main',
-    'done',
-    'underMain',
-    'underDone',
-    'rowsOutside',
-    'columnsOutside'
-  ]);
-  styles.contents[0].rowHeight = 44;
-  styles.headers[0].fontSize = 10;
-  return {
-    name: 'Hands',
-    features: {
-      setSheetStylesBySection: {
-        events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
-        styles: styles
       },
-      setSheetGroupsBySection: {
-        events: [Event.onOvernightTimer],
-        section: SectionMarker.done,
-        numRowsToDisplay: 3
-      }
-    },
-    sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Hands',
-        text: 'This sheet tracks when people volunteer, or "raise their hands." People are added the moment they make an enquiry, and they progress through the statuses whether they end up on a project or not.<br><br>If the same person volunteers for a second project, they are enetered again on the sheet. Usually people do one project at a time but it is possible in theory at least they could end up on the active section of this sheet twice.<br><br>The data is entered manually from Jigsaw, which takes about 1 minute per person - but the payback is people don\'t easily "fall through the cracks."'
-      },
-      arrange: {
-        type: 'buttons',
-        title: 'Arrange by',
-        options: ['Status', 'Project', 'Office', 'Country'],
-        features: {
-          orderSheetMainSection: {
-            events: [Event.onSidebarSubmit],
-            by: {
-              status:  [{ column: 'I', direction: 'ascending' }, { column: 'M', direction: 'ascending' }, { column: 'N', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'F', direction: 'ascending' }],
-              project: [{ column: 'M', direction: 'ascending' }, { column: 'I', direction: 'ascending' }, { column: 'N', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'F', direction: 'ascending' }],
-              office:  [{ column: 'E', direction: 'ascending' }, { column: 'F', direction: 'ascending' }, { column: 'I', direction: 'ascending' }, { column: 'M', direction: 'ascending' }, { column: 'N', direction: 'ascending' }],
-              country: [{ column: 'F', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'I', direction: 'ascending' }, { column: 'M', direction: 'ascending' }, { column: 'N', direction: 'ascending' }]
-            }
-          }
-        }
-      },
-      archive: {
-        type: 'buttons',
-        title: 'Tidy',
-        options: ['Archive Done Items'],
-        features: {
-          moveSheetRowsMainToDone: {
-            events: [Event.onSidebarSubmit],
-            match: {
-              value: [') Opportunity Completed', ') No Opportunity Found', ') No Reply', ') No Longer Available'],
-              column: 'I'
-            }
-          }
-        }
-      }
+      review: getReviewConfig()
     }
   };
 }
 
 function getCurrentPaigeConfig() {
-  const styles = state.style.getDefault([
-    'titles',
-    'titlesAboveBelow',
-    'headers',
-    'main',
-    'done',
-    'underMain',
-    'underDone',
-    'rowsOutside',
-    'columnsOutside'
-  ]);
+  const sections = ['titles', 'titlesAboveBelow', 'headers', 'main', 'done', 'underMain', 'underDone', 'rowsOutside', 'columnsOutside'];
+  const styles = state.style.getDefault(sections);
+
   return {
     name: 'Current:Paige',
     features: {
@@ -342,7 +270,7 @@ function getCurrentPaigeConfig() {
         title: 'Arrange by',
         options: ['Status'],
         features: {
-          orderSheetMainSection: {
+          orderSheetMainSections: {
             events: [Event.onSidebarSubmit],
             by: {
               status: [{ column: 'C', direction: 'ascending' }, { column: 'B', direction: 'ascending' }]
@@ -355,32 +283,194 @@ function getCurrentPaigeConfig() {
         title: 'Tidy',
         options: ['Archive Done Items'],
         features: {
-          moveSheetRowsMainToDone: {
+          moveSheetRowsToDone: {
             events: [Event.onSidebarSubmit],
+            from: SectionMarker.main,
             match: {
               value: ') DONE',
               column: 'C'
             }
           }
         }
-      }
+      },
+      review: getReviewConfig()
     }
   };
 }
 
-function getMapConfig() {
-  let styles = state.style.getTwoPanel([
-    'titles',
-    'titlesAboveBelow',
-    'headers',
-    'main',
-    'underMain',
-    'rowsOutside',
-    'columnsOutside'
-  ]);
-  styles.contents[0].rowHeight = 95;
+function getTriggersConfig() {
   return {
-    name: 'Map',
+    name: 'Triggers',
+    sidebar: {
+      guidance: {
+        type: 'text',
+        title: 'Triggers',
+        text: `This will be help text.`
+      },
+      review: getReviewConfig()
+    }
+  };
+}
+
+function getPublishingConfig() {
+  const sections = ['titles', 'titlesAboveBelow', 'headers', 'main', 'done', 'underMain', 'underDone', 'rowsOutside', 'columnsOutside'];
+  const styles = state.style.getTwoPanel(sections, 2);
+  styles.contents.left.fontSize = 9;
+  styles.contents.right.fontSize = 9;
+
+  return {
+    name: 'Publishing',
+    features: {
+      setSheetStylesBySection: {
+        events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        styles: styles
+      },
+      setSheetGroupsBySection: {
+        events: [Event.onOvernightTimer],
+        section: SectionMarker.done,
+        numRowsToDisplay: 3
+      }
+    },
+    sidebar: {
+      guidance: {
+        type: 'text',
+        title: 'Publishing',
+        text: 'This is guidance on Publishing sheet. It may be several lines of text, or even rich html? Nunc vulputate mauris imperdiet vehicula faucibus. Curabitur facilisis turpis libero, id volutpat velit aliquet a. Curabitur at euismod mi.'
+      },
+      arrange: {
+        type: 'buttons',
+        title: 'Arrange by',
+        options: ['Channel' , 'Status'],
+        features: {
+          orderSheetMainSections: {
+            events: [Event.onSidebarSubmit],
+            priority: 'HIGH_PRIORITY',
+            by: {
+              channel: [{ column: 'C', direction: 'ascending' }, { column: 'D', direction: 'ascending' }],
+              status: [{ column: 'D', direction: 'ascending' }, { column: 'C', direction: 'ascending' }]
+            }
+          }
+        }
+      },
+      archive: {
+        type: 'buttons',
+        title: 'Tidy',
+        options: ['Archive Done Items'],
+        features: {
+          moveSheetRowsToDone: {
+            events: [Event.onSidebarSubmit],
+            from: SectionMarker.main,
+            priority: 'HIGH_PRIORITY',
+            match: {
+              value: ') PUBLISHED',
+              column: 'D'
+            }
+          }
+        }
+      },
+      review: getReviewConfig()
+    }
+  };
+}
+
+function getProjectsConfig() {
+  return {
+    name: 'Projects',
+    features: {
+      copySheetToExternalSpreadsheet: {
+        events: [Event.onSheetEdit],
+        destinationSpreadsheetID: '1UJMpl988DHsl3FSgZU4VoXysaKolK-IrzNz_xxbSguM',
+        destinationSheetName: 'Current Projects',
+        nonRichTextColumnOverwrite: { column: 'H', startRow: 5 }
+      }
+    },
+    sidebar: {
+      guidance: {
+        type: 'text',
+        title: 'Projects',
+        text: 'This is guidance on Projects sheet. It may be several lines of text, or even rich html? Nunc vulputate mauris imperdiet vehicula faucibus. Curabitur facilisis turpis libero, id volutpat velit aliquet a. Curabitur at euismod mi.'
+      },
+      review: getReviewConfig()
+    }
+  };
+}
+
+function getHandsConfig() {
+  const sections = ['titles', 'titlesAboveBelow', 'headers', 'main', 'done', 'underMain', 'underDone', 'rowsOutside', 'columnsOutside'];
+  const styles = state.style.getThreePanel(sections, 9, 2);
+  styles.contents.left.fontSize = 9;
+  styles.contents.middle.fontSize = 9;
+  styles.contents.right.fontSize = 9;
+  styles.contents.all.rowHeight = 44;
+  styles.headers.all.fontSize = 10;
+  styles.titles.between.endColumnOffset = 8;
+  styles.titles.review.endColumnOffset = 7;
+  styles.titles.after = state.style.getBlank({ endColumnOffset: 0, numColumns: 6, border: state.style.border.empty })
+
+  return {
+    name: 'Hands',
+    features: {
+      setSheetStylesBySection: {
+        events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        styles: styles
+      },
+      setSheetGroupsBySection: {
+        events: [Event.onOvernightTimer],
+        section: SectionMarker.done,
+        numRowsToDisplay: 3
+      }
+    },
+    sidebar: {
+      guidance: {
+        type: 'text',
+        title: 'Hands',
+        text: 'This sheet tracks when people volunteer, or "raise their hands." People are added the moment they make an enquiry, and they progress through the statuses whether they end up on a project or not.<br><br>If the same person volunteers for a second project, they are enetered again on the sheet. Usually people do one project at a time but it is possible in theory at least they could end up on the active section of this sheet twice.<br><br>The data is entered manually from Jigsaw, which takes about 1 minute per person - but the payback is people don\'t easily "fall through the cracks."'
+      },
+      arrange: {
+        type: 'buttons',
+        title: 'Arrange by',
+        options: ['Status', 'Project', 'Office', 'Country'],
+        features: {
+          orderSheetMainSections: {
+            events: [Event.onSidebarSubmit],
+            by: {
+              status:  [{ column: 'I', direction: 'ascending' }, { column: 'M', direction: 'ascending' }, { column: 'N', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'F', direction: 'ascending' }],
+              project: [{ column: 'M', direction: 'ascending' }, { column: 'I', direction: 'ascending' }, { column: 'N', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'F', direction: 'ascending' }],
+              office:  [{ column: 'E', direction: 'ascending' }, { column: 'F', direction: 'ascending' }, { column: 'I', direction: 'ascending' }, { column: 'M', direction: 'ascending' }, { column: 'N', direction: 'ascending' }],
+              country: [{ column: 'F', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'I', direction: 'ascending' }, { column: 'M', direction: 'ascending' }, { column: 'N', direction: 'ascending' }]
+            }
+          }
+        }
+      },
+      archive: {
+        type: 'buttons',
+        title: 'Tidy',
+        options: ['Archive Done Items'],
+        features: {
+          moveSheetRowsToDone: {
+            events: [Event.onSidebarSubmit],
+            from: SectionMarker.main,
+            match: {
+              value: [') Opportunity Completed', ') No Opportunity Found', ') No Reply', ') No Longer Available'],
+              column: 'I'
+            }
+          }
+        }
+      },
+      review: getReviewConfig(SectionMarker.title, 'I')
+    }
+  };
+}
+
+function getAimsConfig() {
+  const sections = ['titles', 'titlesAboveBelow', 'headers', 'main', 'underMain', 'rowsOutside', 'columnsOutside'];
+  let styles = state.style.getTwoPanel(sections);
+  styles.contents.left.fontSize = 12;
+  styles.contents.right.fontSize = 9;
+  styles.contents.all.rowHeight = 160;
+
+  return {
+    name: 'Aims',
     features: {
       setSheetStylesBySection: {
         events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
@@ -390,24 +480,20 @@ function getMapConfig() {
     sidebar: {
       guidance: {
         type: 'text',
-        title: 'Map',
-        text: `The 'Map' tab is based loosely around <a href='https://www.mindmapping.com/mind-map'>Mind Maps</a>, in that is is designed to work in harmony the natural functioning of the human mind and get ideas down in a mental tree-like structure.<br><br>All the text fields are free type, no need to worry about whether your edits correctly reference other areas of the dashboard. Just go ahead and start typing in whatever way matches the way things are in your mind.<br><br>There is a hierarchy inherent to mind-mapping but it shouldn't be overthought - arrange things in an intuitive way. Also, there is an inherent prioritization inherent in the positions of branches and twigs, but this doesn't constrain action. The next todo item could right now be on the furthest twig. Instead, arrage things as intuitively as you can.<br><br>The benefit of this tab is it can be referenced when building and updating Todo lists, or to get a fast but comprehensive overview of the set of current concerns.`
+        title: 'Aims',
+        text: `High level aims of Thoughtworks Arts.`
       }
     }
   };
 }
 
 function getDocsConfig() {
-  let styles = state.style.getTwoPanel([
-    'titles',
-    'titlesAboveBelow',
-    'headers',
-    'main',
-    'underMain',
-    'rowsOutside',
-    'columnsOutside'
-  ]);
-  styles.contents[0].rowHeight = 120;
+  const sections = ['titles', 'titlesAboveBelow', 'headers', 'main', 'underMain', 'rowsOutside', 'columnsOutside'];
+  let styles = state.style.getTwoPanel(sections);
+  styles.contents.left.fontSize = 12;
+  styles.contents.right.fontSize = 9;
+  styles.contents.all.rowHeight = 120;
+
   return {
     name: 'Docs',
     features: {
@@ -426,31 +512,20 @@ function getDocsConfig() {
   };
 }
 
-function getAimsConfig() {
-  let styles = state.style.getTwoPanel([
-    'titles',
-    'titlesAboveBelow',
-    'headers',
-    'main',
-    'underMain',
-    'rowsOutside',
-    'columnsOutside'
-  ]);
-  styles.contents[0].rowHeight = 160;
+function getReviewConfig(rowMarker=SectionMarker.title, column=false) {
   return {
-    name: 'Aims',
+    type: 'buttons',
+    title: 'Last review',
+    options: ['Today'],
     features: {
-      setSheetStylesBySection: {
-        events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
-        styles: styles
-      }
-    },
-    sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Aims',
-        text: `High level aims of Thoughtworks Arts.`
+      setSheetValue: {
+        events: [Event.onSidebarSubmit],
+        update: {
+          rowMarker: rowMarker,
+          column: column || PropertyCommand.LAST_COLUMN,
+          value: PropertyCommand.CURRENT_DATE
+        }
       }
     }
-  };
+  }
 }
