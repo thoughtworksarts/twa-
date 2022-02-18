@@ -423,7 +423,7 @@ function getPublishingConfig() {
       }
     },
     "TWA.io: Blog": {
-      reminderTexts: ['Medium clone', 'Social shares', 'Contact associated individuals'],
+      reminderTexts: ['Medium clone', 'Social shares', 'Contact associates'],
       executeFeatures: (channel, triggerText) => {
         executeFeature(get.featureId.createInPublishing,   [get.message.createMedium(triggerText), get.channel.mediumBlog, get.defaultStatus.publishing, '', get.message.generatedBy(channel)], 'Paige');
         executeFeature(get.featureId.createInPublishing,   [get.message.createSocial(triggerText), get.channel.social,     get.defaultStatus.publishing, '', get.message.generatedBy(channel)], 'Paige');
@@ -432,7 +432,7 @@ function getPublishingConfig() {
       }
     },
     "TWA.io: Project": {
-      reminderTexts: ['Social shares', 'Contact associated individuals'],
+      reminderTexts: ['Social shares', 'Contact associates'],
       executeFeatures: (channel, triggerText) => {
         executeFeature(get.featureId.createInPublishing,   [get.message.createSocial(triggerText), get.channel.social,     get.defaultStatus.publishing, '', get.message.generatedBy(channel)], 'Paige');
         executeFeature(get.featureId.createInCurrentPaige, [get.message.contactAssociates(channel, triggerText), get.defaultStatus.currentPaige, get.message.contactHow, get.message.contactWhenDone, '', get.message.generatedBy(channel)]);
@@ -456,6 +456,11 @@ function getPublishingConfig() {
   return {
     name: 'Publishing',
     features: {
+      cacheSheetRowsBySection: {
+        events: [Event.onSheetEdit],
+        section: SectionMarker.main,
+        cacheKey: 'Publishing.main'
+      },
       setSheetStylesBySection: {
         events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
         styles: styles
@@ -468,12 +473,16 @@ function getPublishingConfig() {
       alertSheetOnEdit: {
         events: [Event.onSheetEdit],
         priority: 'HIGH_PRIORITY',
+        cacheKey: 'Publishing.main',
         triggerValue: '(4) PUBLISHED',
         buttonSet: 'YES_NO',
         getMessage: (row) => {
           const channel = row['C'];
-          const reminders = getReadableReminders(publicationResponses[channel].reminderTexts);
-          if(isString(reminders)) return { title: 'Publication Triggers', text: 'You just published a ' + channel + ', which should trigger the following:\n\n' + reminders + '\n\nWould you like to create these entries now?' };
+          const response = publicationResponses[channel];
+          if(isObject(response)) {
+            const reminders = getReadableReminders(publicationResponses[channel].reminderTexts);
+            return { title: 'Publication Triggers', text: 'You just published a ' + channel + ', which should trigger the following:\n\n' + reminders + '\n\nWould you like to create these entries now?' };
+          }
           return false;
         },
         respondToPrompt(button, row) {
