@@ -187,6 +187,10 @@ function getMapConfig() {
 function getCurrentAndyConfig() {
   const sections = ['titles', 'titlesAboveBelow', 'hiddenValues', 'headers', 'main', 'done', 'underMain', 'underDone', 'rowsOutside', 'columnsOutside'];
   const styles = state.style.getDefault(sections);
+  styles.headers.all.fontSize = PropertyCommand.IGNORE;
+  styles.headers.left = { fontSize: 13, beginColumnOffset: 0, numColumns: 3 };
+  styles.headers.middle = { fontSize: 9, beginColumnOffset: 3, numColumns: 3 };
+  styles.headers.right = { fontSize: 13, beginColumnOffset: 6 };
 
   return {
     name: 'Current:Andy',
