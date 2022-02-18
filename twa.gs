@@ -467,7 +467,7 @@ function getPublishingConfig() {
     "Internal: Newsletter": {
       reminderTexts: ['Stakeholders'],
       executeFeatures: (channel, triggerText) => {
-        executeFeature(get.featureId.createInPublishing,   [get.message.contactInternal(triggerText), get.channel.internalStakeholder, get.defaultStatus.publishing, '', get.message.generatedBy(channel)], 'Andy');
+        executeFeature(get.featureId.createInPublishing,   [get.message.contactInternal(channel, triggerText), get.channel.internalStakeholder, get.defaultStatus.publishing, '', get.message.generatedBy(channel)], 'Andy');
       }
     }
   }
