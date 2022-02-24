@@ -57,17 +57,21 @@ function getDashboardConfig() {
       }
     },
     sidebar: {
+      heading: {
+        type: 'heading',
+        title: 'Dashboard'
+      },
       guidance: {
         type: 'text',
-        title: 'Dashboard',
-        text: 'Text for Dashboard.'
+        title: 'Guidance',
+        text: 'Edit the numbers here to change when review dates turn yellow and then red. However, edit the due dates themselves using the sidebars on each of the individual sheets.'
       }
     }
   };
 }
 
 function getTimelineConfig() {
-  const sections = ['titlesAbove', 'titles', 'headers', 'generic', 'rowBottomOutside', 'columnsOutside', 'matchers'];
+  const sections = ['titlesAbove', 'titles', 'headers', 'generic', 'rowBottomOutside', 'columnsOutside', 'rowMatchers'];
   const styles = state.style.getTimeline(sections);
 
   return {
@@ -112,11 +116,11 @@ function getTimelineConfig() {
       }
     },
     sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Timeline',
-        text: 'Free type in the colored lanes, and cross reference with Google Calendar events (in the grey lane on the left).'
+      heading: {
+        type: 'heading',
+        title: 'Timeline'
       },
+      review: getReviewConfig(SectionMarker.aboveTitle, 'D'),
       years: {
         type: 'buttons',
         title: 'Year to display',
@@ -148,12 +152,16 @@ function getTimelineConfig() {
           }
         }
       },
-      color: {
-        type: 'text',
-        title: 'Help',
-        text: '1. Use these event typing conventions:<table><tr><td><pre>&nbsp;&nbsp;words?</pre></td><td>dates not yet confirmed</td></tr><tr><td><pre>&nbsp;[words]&nbsp;&nbsp;</pre></td><td>behind-the-scenes, less time-sensitive, or internal/operational</td></tr><tr><td><pre>&nbsp;&nbsp;words*</pre></td><td>holidays, admin or overriding concerns</td></tr></table><br>2. Don\'t edit the grey lane, it is overwritten by Google Calendar events. Either create an event in Google Calendar or invite <a href="mailto:jahya.net_55gagu1o5dmvtkvfrhc9k39tls@group.calendar.google.com">this email address</a> to a Google Calendar event.<br><br>3. Type into the filter box above to hide items from the grey lane below.'
+      guidance: {
+        type: 'ul',
+        title: 'Guidance',
+        texts: ['Free type in the colored lanes', 'Cross reference with GCal (left)']
       },
-      review: getReviewConfig(SectionMarker.aboveTitle, 'D')
+      help: {
+        type: 'text',
+        title: 'More help',
+        text: '1. Use these event typing conventions:<table><tr><td><pre>&nbsp;&nbsp;words?</pre></td><td>dates not yet confirmed</td></tr><tr><td><pre>&nbsp;[words]&nbsp;&nbsp;</pre></td><td>behind-the-scenes, less time-sensitive, or internal/operational</td></tr><tr><td><pre>&nbsp;&nbsp;words*</pre></td><td>holidays, admin or overriding concerns</td></tr></table><br>2. Don\'t edit the grey lane, it is overwritten by Google Calendar events. Either create an event in Google Calendar or invite <a href="mailto:jahya.net_55gagu1o5dmvtkvfrhc9k39tls@group.calendar.google.com">this email address</a> to a Google Calendar event.<br><br>3. Type into the filter box above to hide items from the grey lane below, or put [brackets] around the event title in GCal.'
+      }
     }
   };
 }
@@ -174,10 +182,9 @@ function getMapConfig() {
       }
     },
     sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Map',
-        text: `The 'Map' tab is based loosely around <a href='https://www.mindmapping.com/mind-map'>Mind Maps</a>, in that is is designed to work in harmony the natural functioning of the human mind and get ideas down in a mental tree-like structure.<br><br>All the text fields are free type, no need to worry about whether your edits correctly reference other areas of the dashboard. Just go ahead and start typing in whatever way matches the way things are in your mind.<br><br>There is a hierarchy inherent to mind-mapping but it shouldn't be overthought - arrange things in an intuitive way. Also, there is an inherent prioritization inherent in the positions of branches and twigs, but this doesn't constrain action. The next todo item could right now be on the furthest twig. Instead, arrage things as intuitively as you can.<br><br>The benefit of this tab is it can be referenced when building and updating Todo lists, or to get a fast but comprehensive overview of the set of current concerns.`
+      heading: {
+        type: 'heading',
+        title: 'Map'
       },
       review: getReviewConfig()
     }
@@ -233,11 +240,11 @@ function getCurrentAndyConfig() {
       }
     },
     sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Usage Guidance',
-        text: 'This is guidance on Current sheet. It may be several lines of text, or even rich html? Nunc vulputate mauris imperdiet vehicula faucibus. Curabitur facilisis turpis libero, id volutpat velit aliquet a. Curabitur at euismod mi.'
+      heading: {
+        type: 'heading',
+        title: 'Current:Andy'
       },
+      review: getReviewConfig(),
       arrange: {
         type: 'buttons',
         title: 'Arrange by',
@@ -296,8 +303,7 @@ function getCurrentAndyConfig() {
             }
           }
         }
-      },
-      review: getReviewConfig()
+      }
     }
   };
 }
@@ -324,11 +330,11 @@ function getCurrentPaigeConfig() {
       }
     },
     sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Usage Guidance',
-        text: 'This is guidance on Current sheet. It may be several lines of text, or even rich html? Nunc vulputate mauris imperdiet vehicula faucibus. Curabitur facilisis turpis libero, id volutpat velit aliquet a. Curabitur at euismod mi.'
+      heading: {
+        type: 'heading',
+        title: 'Current:Paige'
       },
+      review: getReviewConfig(),
       arrange: {
         type: 'buttons',
         title: 'Arrange by',
@@ -356,8 +362,7 @@ function getCurrentPaigeConfig() {
             }
           }
         }
-      },
-      review: getReviewConfig()
+      }
     }
   };
 }
@@ -366,10 +371,9 @@ function getTriggersConfig() {
   return {
     name: 'Triggers',
     sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Triggers',
-        text: `This will be help text.`
+      heading: {
+        type: 'heading',
+        title: 'Triggers'
       },
       review: getReviewConfig()
     }
@@ -530,16 +534,11 @@ function getPublishingConfig() {
       }
     },
     sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Publishing',
-        text: 'This is guidance on Publishing sheet. It may be several lines of text, or even rich html? Nunc vulputate mauris imperdiet vehicula faucibus. Curabitur facilisis turpis libero, id volutpat velit aliquet a. Curabitur at euismod mi.'
+      heading: {
+        type: 'heading',
+        title: 'Publishing'
       },
-      triggers: {
-        type: 'text',
-        title: 'Publication Triggers',
-        text: getAllReadableRemindersAsHtml()
-      },
+      review: getReviewConfig(),
       arrange: {
         type: 'buttons',
         title: 'Arrange by',
@@ -555,25 +554,9 @@ function getPublishingConfig() {
           }
         }
       },
-      archive: {
-        type: 'buttons',
-        title: 'Tidy',
-        options: ['Archive Done Items'],
-        features: {
-          moveSheetRowsToDone: {
-            events: [Event.onSidebarSubmit],
-            from: SectionMarker.main,
-            priority: 'HIGH_PRIORITY',
-            match: {
-              value: ') PUBLISHED',
-              column: 'D'
-            }
-          }
-        }
-      },
       create: {
         type: 'buttons',
-        title: 'Create new item for',
+        title: 'Create new',
         options: ['Paige', 'Andy'],
         features: {
           createSheetItem: {
@@ -592,7 +575,27 @@ function getPublishingConfig() {
           },
         }
       },
-      review: getReviewConfig()
+      archive: {
+        type: 'buttons',
+        title: 'Tidy',
+        options: ['Archive Published Items'],
+        features: {
+          moveSheetRowsToDone: {
+            events: [Event.onSidebarSubmit],
+            from: SectionMarker.main,
+            priority: 'HIGH_PRIORITY',
+            match: {
+              value: ') PUBLISHED',
+              column: 'D'
+            }
+          }
+        }
+      },
+      triggers: {
+        type: 'text',
+        title: 'Publication Triggers',
+        text: getAllReadableRemindersAsHtml()
+      },
     }
   };
 }
@@ -609,10 +612,9 @@ function getProjectsConfig() {
       }
     },
     sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Projects',
-        text: 'This is guidance on Projects sheet. It may be several lines of text, or even rich html? Nunc vulputate mauris imperdiet vehicula faucibus. Curabitur facilisis turpis libero, id volutpat velit aliquet a. Curabitur at euismod mi.'
+      heading: {
+        type: 'heading',
+        title: 'Projects'
       },
       review: getReviewConfig()
     }
@@ -645,11 +647,11 @@ function getHandsConfig() {
       }
     },
     sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Hands',
-        text: 'This sheet tracks when people volunteer, or "raise their hands." People are added the moment they make an enquiry, and they progress through the statuses whether they end up on a project or not.<br><br>If the same person volunteers for a second project, they are enetered again on the sheet. Usually people do one project at a time but it is possible in theory at least they could end up on the active section of this sheet twice.<br><br>The data is entered manually from Jigsaw, which takes about 1 minute per person - but the payback is people don\'t easily "fall through the cracks."'
+      heading: {
+        type: 'heading',
+        title: 'Hands'
       },
+      review: getReviewConfig(SectionMarker.title, 'I'),
       arrange: {
         type: 'buttons',
         title: 'Arrange by',
@@ -669,7 +671,7 @@ function getHandsConfig() {
       archive: {
         type: 'buttons',
         title: 'Tidy',
-        options: ['Archive Done Items'],
+        options: ['Archive Lowered Hands'],
         features: {
           moveSheetRowsToDone: {
             events: [Event.onSidebarSubmit],
@@ -680,8 +682,7 @@ function getHandsConfig() {
             }
           }
         }
-      },
-      review: getReviewConfig(SectionMarker.title, 'I')
+      }
     }
   };
 }
@@ -708,11 +709,11 @@ function getStakeholdersConfig() {
       }
     },
     sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Stakeholders',
-        text: 'Guidance text for Stakeholders.'
+      heading: {
+        type: 'heading',
+        title: 'Stakeholders'
       },
+      review: getReviewConfig(SectionMarker.title, 'I'),
       arrange: {
         type: 'buttons',
         title: 'Arrange by',
@@ -742,8 +743,7 @@ function getStakeholdersConfig() {
             }
           }
         }
-      },
-      review: getReviewConfig(SectionMarker.title, 'I')
+      }
     }
   };
 }
@@ -752,10 +752,9 @@ function getNetworkConfig() {
   return {
     name: 'Network',
     sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Network',
-        text: 'Guidance text for Network.'
+      heading: {
+        type: 'heading',
+        title: 'Network'
       },
       review: getReviewConfig(SectionMarker.title, 'C')
     }
@@ -782,11 +781,11 @@ function getStreamsConfig() {
       }
     },
     sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Streams',
-        text: 'Guidance text for Streams.'
+      heading: {
+        type: 'heading',
+        title: 'Streams'
       },
+      review: getReviewConfig(SectionMarker.title, 'G'),
       arrange: {
         type: 'buttons',
         title: 'Arrange by',
@@ -800,8 +799,7 @@ function getStreamsConfig() {
             }
           }
         }
-      },
-      review: getReviewConfig(SectionMarker.title, 'G')
+      }
     }
   };
 }
@@ -822,10 +820,9 @@ function getAimsConfig() {
       }
     },
     sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Aims',
-        text: `High level aims of Thoughtworks Arts.`
+      heading: {
+        type: 'heading',
+        title: 'Aims'
       },
       review: getReviewConfig()
     }
@@ -848,10 +845,9 @@ function getDocsConfig() {
       }
     },
     sidebar: {
-      guidance: {
-        type: 'text',
-        title: 'Docs',
-        text: `Quick access to and explanation of key overarching docs and links.`
+      heading: {
+        type: 'heading',
+        title: 'Docs'
       },
       review: getReviewConfig()
     }
