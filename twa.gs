@@ -28,6 +28,7 @@ function getFeatureSheetConfigs() {
     this.getHandsConfig(),
     this.getStakeholdersConfig(),
     this.getNetworkConfig(),
+    this.getSpendConfig(),
     this.getStreamsConfig(),
     this.getAimsConfig(),
     this.getDocsConfig()
@@ -432,6 +433,12 @@ function getPublishingConfig() {
         executeFeature(get.featureId.createInPublishing,   [get.message.createTwaNewsletter(triggerText), get.channel.twaNewsletter, get.defaultStatus.publishing, '', get.message.generatedBy(channel)], 'Andy');
       }
     },
+    "TWA.io: Newsletter": {
+      reminderTexts: ['Social'],
+      executeFeatures: (channel, triggerText) => {
+        executeFeature(get.featureId.createInPublishing,   [get.message.createSocial(triggerText), get.channel.social, get.defaultStatus.publishing, '', get.message.generatedBy(channel)], 'Paige');
+      }
+    },
     "TWA.io: Blog": {
       reminderTexts: ['Medium', 'Social', 'Associates'],
       executeFeatures: (channel, triggerText) => {
@@ -757,6 +764,67 @@ function getNetworkConfig() {
         title: 'Network'
       },
       review: getReviewConfig(SectionMarker.title, 'C')
+    }
+  };
+}
+
+function getSpendConfig() {
+  const sections = ['titles', 'titlesAboveBelow', 'headers', 'generic', 'rowsOutside', 'columnsOutside'];
+  const styles = state.style.getTwoPanel(sections, 1);
+  styles.titles.between.endColumnOffset = 2;
+  styles.titles.review.endColumnOffset = 1;
+  styles.headers.all.verticalAlignment = PropertyCommand.IGNORE;
+  styles.headers.all.border = PropertyCommand.IGNORE;
+  styles.headers.left = { beginColumnOffset: 0, numColumns: 1, verticalAlignment: state.style.alignment.vertical.middle };
+  styles.headers.right = { beginColumnOffset: 1, verticalAlignment: state.style.alignment.vertical.bottom };
+  styles.contents.all.rowHeight = 33;
+  styles.contents.all.fontSize = PropertyCommand.IGNORE;
+  styles.contents.all.border = PropertyCommand.IGNORE;
+  styles.contents.left.fontSize = 12;
+  styles.contents.right.border = PropertyCommand.IGNORE;
+  styles.rowsOutside.all.border = PropertyCommand.IGNORE;
+  styles.columnsOutside.all.border = PropertyCommand.IGNORE;
+
+  return {
+    name: 'Spend',
+    features: {
+      setSheetStylesBySection: {
+        events: [Event.onSheetEdit, Event.onOvernightTimer, Event.onHourTimer],
+        styles: styles
+      },
+      setSheetHiddenRowsBySection: {
+        events: [Event.onOvernightTimer],
+        section: SectionMarker.generic,
+        startRowOffset: -1,
+        visibleIfMatch: {
+          column: 'B',
+          text: state.today.getFullYear()
+        }
+      }
+    },
+    sidebar: {
+      heading: {
+        type: 'heading',
+        title: 'Spend'
+      },
+      review: getReviewConfig(SectionMarker.title, 'G'),
+      years: {
+        type: 'buttons',
+        title: 'Year to display',
+        options: ['2021', '2022', '2023', '2024'],
+        features: {
+          setSheetHiddenRowsBySection: {
+            events: [Event.onSidebarSubmit],
+            priority: 'HIGH_PRIORITY',
+            section: SectionMarker.generic,
+            startRowOffset: -1,
+            visibleIfMatch: {
+              column: 'B',
+              text: PropertyCommand.EVENT_DATA
+            }
+          }
+        }
+      }
     }
   };
 }
