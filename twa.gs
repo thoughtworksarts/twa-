@@ -96,7 +96,7 @@ function getTimelineConfig() {
         events: [Event.onOvernightTimer],
         section: SectionMarker.generic,
         startRowOffset: -1,
-        visibleIfMatch: {
+        visibilityMatcher: {
           column: 'D',
           text: state.today.getFullYear()
         }
@@ -132,7 +132,7 @@ function getTimelineConfig() {
             priority: 'HIGH_PRIORITY',
             section: SectionMarker.generic,
             startRowOffset: -1,
-            visibleIfMatch: {
+            visibilityMatcher: {
               column: 'D',
               text: PropertyCommand.EVENT_DATA
             }
@@ -796,7 +796,7 @@ function getSpendConfig() {
         events: [Event.onOvernightTimer],
         section: SectionMarker.generic,
         startRowOffset: -1,
-        visibleIfMatch: {
+        visibilityMatcher: {
           column: 'B',
           text: state.today.getFullYear()
         }
@@ -818,7 +818,7 @@ function getSpendConfig() {
             priority: 'HIGH_PRIORITY',
             section: SectionMarker.generic,
             startRowOffset: -1,
-            visibleIfMatch: {
+            visibilityMatcher: {
               column: 'B',
               text: PropertyCommand.EVENT_DATA
             }
