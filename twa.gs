@@ -125,7 +125,7 @@ function getTimelineConfig() {
       years: {
         type: 'buttons',
         title: 'Year to display',
-        options: ['2021', '2022', '2023', '2024'],
+        options: ['2021', '2022', '2023', '2024', '2025', '2026'],
         features: {
           setSheetHiddenRowsBySection: {
             events: [Event.onSidebarSubmit],
