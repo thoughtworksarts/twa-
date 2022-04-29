@@ -214,7 +214,7 @@ function getCurrentAndyConfig() {
             const timing = row[columns.zeroBasedIndices.timing];
             return data.valid.filter(v => timing.endsWith(v)).length === 1;
           },
-          data: { valid: [') Now', ') Next'] }
+          data: { valid: [') Time Sensitive', ') Time Flexible'] }
         },
         widgetCategories: {
           current: {
@@ -272,13 +272,17 @@ function getCurrentAndyConfig() {
       create: {
         type: 'buttons',
         title: 'Create',
-        options: ['Now', 'Next', 'Rolling'],
+        options: ['Time Sensitive', 'Time Flexible', 'Rolling'],
         features: {
           createSheetItem: {
             events: [Event.onSidebarSubmit],
             priority: 'HIGH_PRIORITY',
             getValues: (option) => {
-              const options = { Now: '(1) Now', Next: '(2) Next', Rolling: '(3) Rolling' }
+              const options = {
+                'Time Sensitive': '(1) Time Sensitive',
+                'Time Flexible':  '(2) Time Flexible',
+                'Rolling':        '(3) Rolling'
+              };
               const timing = options[option];
               return ['', '', timing, '', '', '', '', ''];
             }
@@ -395,7 +399,7 @@ function getPublishingConfig() {
     },
     defaultStatus: {
       publishing: '(0) Not Started',
-      currentPaige: '(1) Now'
+      currentPaige: '(1) Todo'
     },
     channel: {
       twaNewsletter: 'TWA.io: Newsletter',
@@ -770,7 +774,7 @@ function getNetworkConfig() {
 
 function getSpendConfig() {
   const sections = ['titles', 'titlesAboveBelow', 'headers', 'generic', 'rowsOutside', 'columnsOutside'];
-  const styles = state.style.getTwoPanel(sections, 1);
+  const styles = state.style.getTwoPanel(sections);
   styles.titles.between.endColumnOffset = 2;
   styles.titles.review.endColumnOffset = 1;
   styles.headers.all.verticalAlignment = PropertyCommand.IGNORE;
