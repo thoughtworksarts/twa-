@@ -700,11 +700,8 @@ function getHandsConfig() {
 
 function getStakeholdersConfig() {
   const sections = ['titles', 'titlesAboveBelow', 'headers', 'main', 'done', 'underMain', 'underDone', 'rowsOutside', 'columnsOutside'];
-  const styles = state.style.getTwoPanel(sections, 8);
+  const styles = state.style.getTwoPanel(sections, 7);
   styles.contents.all.rowHeight = 44;
-  styles.titles.between.endColumnOffset = 3;
-  styles.titles.review.endColumnOffset = 2;
-  styles.titles.after = state.style.getBlank({ endColumnOffset: 0, numColumns: 2, border: state.style.border.empty });
 
   return {
     name: 'Stakeholders',
@@ -724,18 +721,19 @@ function getStakeholdersConfig() {
         type: 'heading',
         title: 'Stakeholders'
       },
-      review: getReviewConfig(SectionMarker.title, 'I'),
+      review: getReviewConfig(SectionMarker.title, 'J'),
       arrange: {
         type: 'buttons',
         title: 'Arrange by',
-        options: ['Type', 'Office', 'Country'],
+        options: ['Role', 'Interaction', 'Office', 'Country'],
         features: {
           orderSheetMainSections: {
             events: [Event.onSidebarSubmit],
             by: {
-              type:  [{ column: 'G', direction: 'ascending' }, { column: 'F', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'B', direction: 'ascending' }],
-              office:  [{ column: 'E', direction: 'ascending' }, { column: 'F', direction: 'ascending' }, { column: 'G', direction: 'ascending' }, { column: 'B', direction: 'ascending' }],
-              country: [{ column: 'F', direction: 'ascending' }, { column: 'G', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'B', direction: 'ascending' }]
+              role:        [{ column: 'G', direction: 'ascending' }, { column: 'H', direction: 'ascending' }, { column: 'F', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'B', direction: 'ascending' }],
+              interaction: [{ column: 'H', direction: 'ascending' }, { column: 'G', direction: 'ascending' }, { column: 'F', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'B', direction: 'ascending' }],
+              office:      [{ column: 'E', direction: 'ascending' }, { column: 'F', direction: 'ascending' }, { column: 'G', direction: 'ascending' }, { column: 'H', direction: 'ascending' }, { column: 'B', direction: 'ascending' }],
+              country:     [{ column: 'F', direction: 'ascending' }, { column: 'G', direction: 'ascending' }, { column: 'H', direction: 'ascending' }, { column: 'E', direction: 'ascending' }, { column: 'B', direction: 'ascending' }]
             }
           }
         }
